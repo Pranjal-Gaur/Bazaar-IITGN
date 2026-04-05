@@ -10,7 +10,7 @@ import ReviewModal from '@/components/ReviewModal';
 import Link from 'next/link';
 import { Listing } from '@/types';
 
-type Tab = 'listings' | 'offers' | 'watchlist';
+type Tab = 'listings' | 'offers' | 'watchlist' | 'profile';
 
 interface Offer {
   _id: string;
@@ -46,23 +46,24 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
   const [activeOffer, setActiveOffer] = useState<Offer | null>(null);
   const [showReview, setShowReview] = useState<string | null>(null);
+  const [profileForm, setProfileForm] = useState({ phone: '', bio: '', hostel: '', showPhone: false, showEmail: true });
+  const [profileSaving, setProfileSaving] = useState(false);
+  const [profileSaved, setProfileSaved] = useState(false);
 
   useEffect(() => {
     if (status === 'unauthenticated') { signIn(); return; }
     if (status !== 'authenticated') return;
 
     async function load() {
-      const [listRes, buyRes, sellRes, wlRes] = await Promise.all([
-        fetch(`/api/listings?status=all&q=seller:${session?.user?.email}`),
+      const [listingsRes, buyRes, sellRes, wlRes, profileRes] = await Promise.all([
+        fetch(`/api/listings?status=all`),
         fetch('/api/offers?as=buyer'),
         fetch('/api/offers?as=seller'),
         fetch('/api/watchlist'),
+        fetch(`/api/users/${session?.user?.id}`),
       ]);
 
-      // Fetch my listings directly by seller email
-      const listingsRes = await fetch(`/api/listings?status=all`);
       const listingsData = await listingsRes.json();
-      // Filter client-side for own listings
       setMyListings((listingsData.listings ?? []).filter(
         (l: Listing) => l.seller?.email === session?.user?.email
       ));
@@ -70,6 +71,17 @@ export default function DashboardPage() {
       if (buyRes.ok) setBuyerOffers((await buyRes.json()).offers ?? []);
       if (sellRes.ok) setSellerOffers((await sellRes.json()).offers ?? []);
       if (wlRes.ok) setWatchlist((await wlRes.json()).listings ?? []);
+      if (profileRes.ok) {
+        const pd = await profileRes.json();
+        const u = pd.user;
+        if (u) setProfileForm({
+          phone: u.phone ?? '',
+          bio: u.bio ?? '',
+          hostel: u.hostel ?? '',
+          showPhone: u.contactPreferences?.showPhone ?? false,
+          showEmail: u.contactPreferences?.showEmail ?? true,
+        });
+      }
       setLoading(false);
     }
     load();
@@ -87,7 +99,30 @@ export default function DashboardPage() {
     { key: 'listings', label: 'My Listings', count: myListings.length },
     { key: 'offers', label: 'Offers', count: buyerOffers.length + sellerOffers.length },
     { key: 'watchlist', label: 'Watchlist', count: watchlist.length },
+    { key: 'profile', label: 'Edit Profile', count: 0 },
   ];
+
+  async function saveProfile() {
+    setProfileSaving(true);
+    setProfileSaved(false);
+    await fetch(`/api/users/${session?.user?.id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        phone: profileForm.phone,
+        bio: profileForm.bio,
+        hostel: profileForm.hostel,
+        contactPreferences: {
+          showPhone: profileForm.showPhone,
+          showEmail: profileForm.showEmail,
+          preferChat: true,
+        },
+      }),
+    });
+    setProfileSaving(false);
+    setProfileSaved(true);
+    setTimeout(() => setProfileSaved(false), 3000);
+  }
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -230,6 +265,96 @@ export default function DashboardPage() {
                   {watchlist.map((l) => <ListingCard key={l._id} listing={l} />)}
                 </div>
               )}
+            </div>
+          )}
+
+          {/* EDIT PROFILE */}
+          {tab === 'profile' && (
+            <div className="max-w-lg">
+              <h2 className="font-bold text-lg mb-6" style={{ color: '#163850' }}>Edit Profile</h2>
+              <div className="bg-white rounded-2xl p-6 shadow-sm space-y-5">
+
+                <div>
+                  <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: '#6b7280' }}>Hostel</label>
+                  <select
+                    value={profileForm.hostel}
+                    onChange={(e) => setProfileForm((p) => ({ ...p, hostel: e.target.value }))}
+                    className="w-full px-3 py-2.5 rounded-lg border text-sm outline-none"
+                    style={{ borderColor: '#e2e8f0', color: '#163850' }}
+                  >
+                    <option value="">Select hostel…</option>
+                    {['Aibaan','Beauki','Chimair','Duven','Emiet','Firpeal','Griwiksh','Hiqom','Ijokha','Jurqia','Lekhaag'].map((h) => (
+                      <option key={h} value={h}>{h}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: '#6b7280' }}>Phone Number</label>
+                  <input
+                    type="tel"
+                    value={profileForm.phone}
+                    onChange={(e) => setProfileForm((p) => ({ ...p, phone: e.target.value }))}
+                    placeholder="e.g. 9876543210"
+                    className="w-full px-4 py-2.5 rounded-lg border text-sm outline-none"
+                    style={{ borderColor: '#e2e8f0', color: '#163850' }}
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: '#6b7280' }}>Bio</label>
+                  <textarea
+                    value={profileForm.bio}
+                    onChange={(e) => setProfileForm((p) => ({ ...p, bio: e.target.value }))}
+                    placeholder="Tell buyers a bit about yourself…"
+                    rows={3}
+                    maxLength={300}
+                    className="w-full px-4 py-2.5 rounded-lg border text-sm resize-none outline-none"
+                    style={{ borderColor: '#e2e8f0', color: '#163850' }}
+                  />
+                  <span className="text-xs" style={{ color: '#9ca3af' }}>{profileForm.bio.length}/300</span>
+                </div>
+
+                <div className="border-t pt-4 space-y-3">
+                  <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: '#6b7280' }}>Contact Visibility</p>
+                  <label className="flex items-center justify-between cursor-pointer">
+                    <div>
+                      <span className="text-sm font-medium" style={{ color: '#163850' }}>Show phone to buyers</span>
+                      <p className="text-xs" style={{ color: '#9ca3af' }}>Buyers can call you directly on the listing page</p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setProfileForm((p) => ({ ...p, showPhone: !p.showPhone }))}
+                      className="relative w-11 h-6 rounded-full transition-colors flex-shrink-0"
+                      style={{ backgroundColor: profileForm.showPhone ? '#079BD8' : '#e5e7eb' }}
+                    >
+                      <span className="absolute top-0.5 w-5 h-5 rounded-full bg-white shadow transition-all" style={{ left: profileForm.showPhone ? '22px' : '2px' }} />
+                    </button>
+                  </label>
+                  <label className="flex items-center justify-between cursor-pointer">
+                    <div>
+                      <span className="text-sm font-medium" style={{ color: '#163850' }}>Show email to buyers</span>
+                      <p className="text-xs" style={{ color: '#9ca3af' }}>Buyers can email you directly</p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setProfileForm((p) => ({ ...p, showEmail: !p.showEmail }))}
+                      className="relative w-11 h-6 rounded-full transition-colors flex-shrink-0"
+                      style={{ backgroundColor: profileForm.showEmail ? '#079BD8' : '#e5e7eb' }}
+                    >
+                      <span className="absolute top-0.5 w-5 h-5 rounded-full bg-white shadow transition-all" style={{ left: profileForm.showEmail ? '22px' : '2px' }} />
+                    </button>
+                  </label>
+                </div>
+
+                <button
+                  onClick={saveProfile}
+                  disabled={profileSaving}
+                  className="btn-primary w-full justify-center py-3"
+                >
+                  {profileSaving ? 'Saving…' : profileSaved ? '✅ Saved!' : 'Save Profile'}
+                </button>
+              </div>
             </div>
           )}
         </div>

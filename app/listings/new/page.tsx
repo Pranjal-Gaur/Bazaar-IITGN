@@ -10,7 +10,7 @@ import { HOSTELS, Category, Condition } from '@/types';
 
 const CATEGORIES: Category[] = ['Electronics', 'Books', 'Cycles', 'Hostel Gear', 'Sports', 'Clothing', 'Others'];
 const CONDITIONS: Condition[] = ['New', 'Like New', 'Good', 'Fair', 'Poor'];
-const PICKUP_SPOTS = ['Aibaan Mess', 'Beauki Mess', 'Chimair Courtyard', 'Duven Mess', 'Emiet Common Room', 'Library Entrance', 'Academic Block', 'Sports Complex', 'Other'];
+const PICKUP_SPOTS = ['Tea Post', 'Panchangan', 'Panchayat Circle', 'Jaiwal Mess', 'Bhopal Mess', 'Central Arcade', 'Other'];
 
 export default function NewListingPage() {
   const { data: session, status } = useSession();

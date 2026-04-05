@@ -1,13 +1,21 @@
-import Link from 'next/link';
+'use client';
 
-const STATS = [
-  { label: 'Active Listings', value: '240+' },
-  { label: 'Community Members', value: '1,800+' },
-  { label: 'Successful Trades', value: '950+' },
-  { label: 'Avg. Savings', value: '60%' },
-];
+import Link from 'next/link';
+import { useEffect, useState } from 'react';
 
 export default function Hero() {
+  const [stats, setStats] = useState({ activeListings: 0, communityMembers: 0, successfulTrades: 0, avgSavings: 0 });
+
+  useEffect(() => {
+    fetch('/api/stats').then((r) => r.json()).then(setStats).catch(() => {});
+  }, []);
+
+  const STATS = [
+    { label: 'Active Listings', value: stats.activeListings > 0 ? `${stats.activeListings}` : '—' },
+    { label: 'Community Members', value: stats.communityMembers > 0 ? `${stats.communityMembers}` : '—' },
+    { label: 'Successful Trades', value: stats.successfulTrades > 0 ? `${stats.successfulTrades}` : '—' },
+    { label: 'Avg. Savings', value: stats.avgSavings > 0 ? `${stats.avgSavings}%` : '—' },
+  ];
   return (
     <section
       className="relative overflow-hidden"
@@ -92,12 +100,9 @@ export default function Hero() {
 
                   <select className="px-3 py-2.5 rounded-lg text-sm border outline-none cursor-pointer" style={{ borderColor: '#e2e8f0', color: '#163850' }}>
                     <option value="">Hostel</option>
-                    <option>Aibaan</option>
-                    <option>Beauki</option>
-                    <option>Chimair</option>
-                    <option>Duven</option>
-                    <option>Emiet</option>
-                    <option>Firaki</option>
+                    {['Aibaan','Beauki','Chimair','Duven','Emiet','Firpeal','Griwiksh','Hiqom','Ijokha','Jurqia','Lekhaag'].map((h) => (
+                      <option key={h}>{h}</option>
+                    ))}
                   </select>
                 </div>
 

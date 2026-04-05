@@ -99,9 +99,9 @@ export default function OfferModal({
     }
   }
 
-  const discount = price
-    ? Math.round((1 - Number(price) / listingPrice) * 100)
-    : 0;
+  const offerAmt = Number(price) || 0;
+  const savings = listingPrice - offerAmt;
+  const discount = listingPrice > 0 ? Math.round((savings / listingPrice) * 100) : 0;
 
   const statusInfo = offer ? STATUS_LABELS[offer.status] : null;
 
@@ -152,9 +152,13 @@ export default function OfferModal({
                   className="w-full px-4 py-2.5 rounded-lg border text-lg font-bold outline-none focus:ring-2"
                   style={{ borderColor: '#e2e8f0', color: '#163850' }}
                 />
-                {price && discount > 0 && (
-                  <p className="text-xs mt-1" style={{ color: '#15803d' }}>
-                    That's {discount}% off the listed price
+                {price && offerAmt > 0 && (
+                  <p className="text-xs mt-1" style={{ color: savings > 0 ? '#15803d' : savings < 0 ? '#dc2626' : '#6b7280' }}>
+                    {savings > 0
+                      ? `${discount}% below listed price — seller saves you ₹${savings.toLocaleString()}`
+                      : savings < 0
+                      ? `₹${Math.abs(savings).toLocaleString()} above listed price`
+                      : 'At the listed price'}
                   </p>
                 )}
               </div>

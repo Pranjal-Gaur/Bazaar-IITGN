@@ -42,7 +42,7 @@ export default function Footer() {
           <div>
             <h4 className="text-white font-semibold text-sm uppercase tracking-wider mb-4">Hostels</h4>
             <ul className="space-y-2 text-sm">
-              {['Aibaan', 'Beauki', 'Chimair', 'Duven', 'Emiet', 'Firaki'].map((hostel) => (
+              {['Aibaan', 'Beauki', 'Chimair', 'Duven', 'Emiet', 'Firpeal', 'Griwiksh', 'Hiqom', 'Ijokha', 'Jurqia', 'Lekhaag'].map((hostel) => (
                 <li key={hostel}>
                   <Link href={`/listings?hostel=${hostel}`} className="transition-colors hover:text-white" style={{ color: '#7ecfec' }}>
                     {hostel}
@@ -58,9 +58,9 @@ export default function Footer() {
             <ul className="space-y-2 text-sm">
               {[
                 { label: 'Sign In', href: '/auth/signin' },
-                { label: 'My Listings', href: '/dashboard/listings' },
-                { label: 'My Offers', href: '/dashboard/offers' },
-                { label: 'Watchlist', href: '/dashboard/watchlist' },
+                { label: 'My Listings', href: '/dashboard?tab=listings' },
+                { label: 'My Offers', href: '/dashboard?tab=offers' },
+                { label: 'Watchlist', href: '/dashboard?tab=watchlist' },
                 { label: 'Post an Item', href: '/listings/new' },
               ].map(({ label, href }) => (
                 <li key={label}>

@@ -35,6 +35,7 @@ export default function ListingDetailPage() {
   const [watchlisted, setWatchlisted] = useState(false);
   const [existingOffer, setExistingOffer] = useState(null);
   const [roomId, setRoomId] = useState('');
+  const [sellerProfile, setSellerProfile] = useState<{ phone?: string; bio?: string; contactPreferences?: { showPhone: boolean; showEmail: boolean } } | null>(null);
 
   useEffect(() => {
     async function load() {
@@ -43,10 +44,17 @@ export default function ListingDetailPage() {
         if (!res.ok) { router.push('/listings'); return; }
         const data = await res.json();
         setListing(data);
-        // Load related
-        const rel = await fetch(`/api/listings?category=${data.category}&limit=4`);
+        // Load related + seller profile in parallel
+        const [rel, profileRes] = await Promise.all([
+          fetch(`/api/listings?category=${data.category}&limit=4`),
+          fetch(`/api/users/${encodeURIComponent(data.seller.email)}`),
+        ]);
         const relData = await rel.json();
         setRelated((relData.listings ?? []).filter((l: Listing) => l._id !== id));
+        if (profileRes.ok) {
+          const profileData = await profileRes.json();
+          setSellerProfile(profileData.user);
+        }
 
         // Check if user has an offer
         if (session?.user?.id) {
@@ -320,6 +328,41 @@ export default function ListingDetailPage() {
                         {listing.seller.karmaScore} Karma
                       </span>
                       <span className="text-xs ml-auto" style={{ color: '#6b7280' }}>Trusted seller</span>
+                    </div>
+                  )}
+
+                  {/* Seller bio */}
+                  {sellerProfile?.bio && (
+                    <p className="mt-2 text-xs italic" style={{ color: '#6b7280' }}>"{sellerProfile.bio}"</p>
+                  )}
+
+                  {/* Contact details */}
+                  {!isSeller && (
+                    <div className="mt-3 space-y-2">
+                      {sellerProfile?.contactPreferences?.showPhone && sellerProfile?.phone && (
+                        <a
+                          href={`tel:${sellerProfile.phone}`}
+                          className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-semibold w-full"
+                          style={{ backgroundColor: '#dcfce7', color: '#15803d' }}
+                        >
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                          </svg>
+                          Call {sellerProfile.phone}
+                        </a>
+                      )}
+                      {sellerProfile?.contactPreferences?.showEmail && (
+                        <a
+                          href={`mailto:${listing.seller.email}`}
+                          className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-semibold w-full"
+                          style={{ backgroundColor: '#e8f4fd', color: '#045F82' }}
+                        >
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                          </svg>
+                          {listing.seller.email}
+                        </a>
+                      )}
                     </div>
                   )}
                 </div>

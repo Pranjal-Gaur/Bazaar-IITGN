@@ -1,116 +1,53 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import ListingCard from '@/components/ListingCard';
 import { Listing, Category, Condition, HOSTELS } from '@/types';
 import Link from 'next/link';
 
-const MOCK_ALL: Listing[] = [
-  {
-    _id: '1',
-    title: 'Dell Inspiron 15 Laptop — Excellent Condition',
-    description: 'Used for 1 year, runs perfectly. Intel i5 11th gen, 8GB RAM, 512GB SSD.',
-    price: 28000, originalPrice: 52000,
-    category: 'Electronics', condition: 'Like New',
-    images: [], seller: { name: 'Arjun Sharma', email: 'arjun@iitgn.ac.in', hostel: 'Chimair' },
-    hostel: 'Chimair', status: 'Available', isUrgent: false,
-    tags: ['laptop', 'dell'], createdAt: new Date(Date.now() - 2 * 3600000).toISOString(),
-  },
-  {
-    _id: '2',
-    title: 'MTB Cycle — Urgent Sale',
-    description: '21-speed mountain bike, well maintained.',
-    price: 4500, originalPrice: 8000,
-    category: 'Cycles', condition: 'Good',
-    images: [], seller: { name: 'Meera Patel', email: 'meera@iitgn.ac.in', hostel: 'Beauki' },
-    hostel: 'Beauki', status: 'Available', isUrgent: true,
-    tags: ['cycle', 'mtb'], createdAt: new Date(Date.now() - 5 * 3600000).toISOString(),
-  },
-  {
-    _id: '3',
-    title: 'Engineering Maths Bundle (4 Books)',
-    description: 'Kreyszig, Arfken, Riley — full set.',
-    price: 800, originalPrice: 2400,
-    category: 'Books', condition: 'Good',
-    images: [], seller: { name: 'Rohit Singh', email: 'rohit@iitgn.ac.in', hostel: 'Aibaan' },
-    hostel: 'Aibaan', status: 'Available', isUrgent: false,
-    tags: ['maths', 'books'], createdAt: new Date(Date.now() - 24 * 3600000).toISOString(),
-  },
-  {
-    _id: '4',
-    title: 'Symphony Cooler — Works Great',
-    description: 'Used for one summer. Cleaned and serviced.',
-    price: 2200, originalPrice: 5500,
-    category: 'Hostel Gear', condition: 'Good',
-    images: [], seller: { name: 'Priya Nair', email: 'priya@iitgn.ac.in', hostel: 'Emiet' },
-    hostel: 'Emiet', status: 'Available', isUrgent: true,
-    tags: ['cooler', 'hostel'], createdAt: new Date(Date.now() - 3 * 3600000).toISOString(),
-  },
-  {
-    _id: '5',
-    title: 'JBL Flip 5 Bluetooth Speaker',
-    description: 'Minor scratch, fully functional. Amazing sound.',
-    price: 3500, originalPrice: 7000,
-    category: 'Electronics', condition: 'Like New',
-    images: [], seller: { name: 'Karan Mehta', email: 'karan@iitgn.ac.in', hostel: 'Duven' },
-    hostel: 'Duven', status: 'Available', isUrgent: false,
-    tags: ['jbl', 'speaker'], createdAt: new Date(Date.now() - 48 * 3600000).toISOString(),
-  },
-  {
-    _id: '6',
-    title: 'Badminton Racket Pair — Yonex',
-    description: 'Set of 2 Yonex rackets with shuttle.',
-    price: 700, originalPrice: 1800,
-    category: 'Sports', condition: 'Good',
-    images: [], seller: { name: 'Ananya Gupta', email: 'ananya@iitgn.ac.in', hostel: 'Firaki' },
-    hostel: 'Firaki', status: 'Available', isUrgent: false,
-    tags: ['badminton', 'yonex'], createdAt: new Date(Date.now() - 72 * 3600000).toISOString(),
-  },
-  {
-    _id: '7',
-    title: 'Calculus by Thomas & Finney',
-    description: 'Standard textbook in great condition.',
-    price: 250, originalPrice: 800,
-    category: 'Books', condition: 'Good',
-    images: [], seller: { name: 'Vivek Kumar', email: 'vivek@iitgn.ac.in', hostel: 'Gokul' },
-    hostel: 'Gokul', status: 'Available', isUrgent: false,
-    tags: ['calculus', 'maths'], createdAt: new Date(Date.now() - 96 * 3600000).toISOString(),
-  },
-  {
-    _id: '8',
-    title: 'Electric Kettle 1.5L',
-    description: 'Works perfectly, used for 6 months.',
-    price: 400, originalPrice: 900,
-    category: 'Hostel Gear', condition: 'Like New',
-    images: [], seller: { name: 'Sneha Rao', email: 'sneha@iitgn.ac.in', hostel: 'Hoaki' },
-    hostel: 'Hoaki', status: 'Available', isUrgent: false,
-    tags: ['kettle', 'hostel'], createdAt: new Date(Date.now() - 120 * 3600000).toISOString(),
-  },
-];
 
 const CATEGORIES: Category[] = ['Electronics', 'Books', 'Cycles', 'Hostel Gear', 'Sports', 'Clothing', 'Others'];
 const CONDITIONS: Condition[] = ['New', 'Like New', 'Good', 'Fair', 'Poor'];
 
-export default function ListingsPage() {
-  const [search, setSearch] = useState('');
-  const [category, setCategory] = useState<string>('');
-  const [hostel, setHostel] = useState<string>('');
+function ListingsContent() {
+  const searchParams = useSearchParams();
+
+  const [search, setSearch] = useState(searchParams.get('q') ?? '');
+  const [category, setCategory] = useState<string>(searchParams.get('category') ?? '');
+  const [hostel, setHostel] = useState<string>(searchParams.get('hostel') ?? '');
   const [condition, setCondition] = useState<string>('');
-  const [urgent, setUrgent] = useState(false);
+  const [urgent, setUrgent] = useState(searchParams.get('urgent') === 'true');
   const [minPrice, setMinPrice] = useState('');
   const [maxPrice, setMaxPrice] = useState('');
   const [sort, setSort] = useState('newest');
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [allListings, setAllListings] = useState<Listing[]>([]);
+  const [fetching, setFetching] = useState(true);
+
+  useEffect(() => {
+    setSearch(searchParams.get('q') ?? '');
+    setCategory(searchParams.get('category') ?? '');
+    setHostel(searchParams.get('hostel') ?? '');
+    setUrgent(searchParams.get('urgent') === 'true');
+  }, [searchParams]);
+
+  useEffect(() => {
+    fetch('/api/listings?status=all&limit=50')
+      .then((r) => r.json())
+      .then((data) => setAllListings(data.listings ?? []))
+      .finally(() => setFetching(false));
+  }, []);
 
   const filtered = useMemo(() => {
-    let results = [...MOCK_ALL];
+    let results = [...allListings];
 
     if (search) {
       const q = search.toLowerCase();
       results = results.filter(
-        (l) => l.title.toLowerCase().includes(q) || l.description.toLowerCase().includes(q) || l.tags.some((t) => t.includes(q))
+        (l) => l.title.toLowerCase().includes(q) || l.description.toLowerCase().includes(q) || l.tags.some((t: string) => t.includes(q))
       );
     }
     if (category) results = results.filter((l) => l.category === category);
@@ -128,7 +65,7 @@ export default function ListingsPage() {
     }
 
     return results;
-  }, [search, category, hostel, condition, urgent, minPrice, maxPrice, sort]);
+  }, [allListings, search, category, hostel, condition, urgent, minPrice, maxPrice, sort]);
 
   const clearFilters = () => {
     setCategory(''); setHostel(''); setCondition('');
@@ -217,19 +154,23 @@ export default function ListingsPage() {
         </label>
         <div className="flex items-center gap-2">
           <input
-            type="number"
+            type="text"
+            inputMode="numeric"
+            pattern="[0-9]*"
             placeholder="Min"
             value={minPrice}
-            onChange={(e) => setMinPrice(e.target.value)}
+            onChange={(e) => { if (/^\d*$/.test(e.target.value)) setMinPrice(e.target.value); }}
             className="w-full px-3 py-2 rounded-lg text-sm border outline-none"
             style={{ borderColor: '#e2e8f0', color: '#163850' }}
           />
           <span style={{ color: '#9ca3af' }}>—</span>
           <input
-            type="number"
+            type="text"
+            inputMode="numeric"
+            pattern="[0-9]*"
             placeholder="Max"
             value={maxPrice}
-            onChange={(e) => setMaxPrice(e.target.value)}
+            onChange={(e) => { if (/^\d*$/.test(e.target.value)) setMaxPrice(e.target.value); }}
             className="w-full px-3 py-2 rounded-lg text-sm border outline-none"
             style={{ borderColor: '#e2e8f0', color: '#163850' }}
           />
@@ -334,7 +275,11 @@ export default function ListingsPage() {
                 </span>
               </div>
 
-              {filtered.length === 0 ? (
+              {fetching ? (
+                <div className="flex justify-center py-20">
+                  <div className="w-10 h-10 border-2 rounded-full animate-spin" style={{ borderColor: '#079BD8', borderTopColor: 'transparent' }} />
+                </div>
+              ) : filtered.length === 0 ? (
                 <div className="text-center py-20">
                   <div className="text-5xl mb-4">🔍</div>
                   <h3 className="text-lg font-bold mb-2" style={{ color: '#163850' }}>No listings found</h3>
@@ -383,5 +328,13 @@ export default function ListingsPage() {
 
       <Footer />
     </div>
+  );
+}
+
+export default function ListingsPage() {
+  return (
+    <Suspense>
+      <ListingsContent />
+    </Suspense>
   );
 }

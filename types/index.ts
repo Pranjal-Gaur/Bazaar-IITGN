@@ -4,7 +4,7 @@ export type ListingStatus = 'Available' | 'Reserved' | 'Sold';
 
 export const HOSTELS = [
   'Aibaan', 'Beauki', 'Chimair', 'Duven', 'Emiet',
-  'Firaki', 'Gokul', 'Hoaki', 'Faculty Housing', 'Other'
+  'Firpeal', 'Griwiksh', 'Hiqom', 'Ijokha', 'Jurqia', 'Lekhaag', 'Other'
 ] as const;
 
 export type Hostel = typeof HOSTELS[number];
