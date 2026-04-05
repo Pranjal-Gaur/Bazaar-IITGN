@@ -46,7 +46,11 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
   const [activeOffer, setActiveOffer] = useState<Offer | null>(null);
   const [showReview, setShowReview] = useState<string | null>(null);
-  const [profileForm, setProfileForm] = useState({ phone: '', bio: '', hostel: '', showPhone: false, showEmail: true });
+  const [profileForm, setProfileForm] = useState({
+    name: '', phone: '', bio: '', hostel: '', wing: '',
+    program: '', branch: '', graduationYear: '',
+    showPhone: false, showEmail: true,
+  });
   const [profileSaving, setProfileSaving] = useState(false);
   const [profileSaved, setProfileSaved] = useState(false);
 
@@ -75,9 +79,14 @@ export default function DashboardPage() {
         const pd = await profileRes.json();
         const u = pd.user;
         if (u) setProfileForm({
+          name: u.name ?? '',
           phone: u.phone ?? '',
           bio: u.bio ?? '',
           hostel: u.hostel ?? '',
+          wing: u.wing ?? '',
+          program: u.program ?? '',
+          branch: u.branch ?? '',
+          graduationYear: u.graduationYear?.toString() ?? '',
           showPhone: u.contactPreferences?.showPhone ?? false,
           showEmail: u.contactPreferences?.showEmail ?? true,
         });
@@ -109,9 +118,14 @@ export default function DashboardPage() {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
+        name: profileForm.name || undefined,
         phone: profileForm.phone,
         bio: profileForm.bio,
         hostel: profileForm.hostel,
+        wing: profileForm.wing,
+        program: profileForm.program,
+        branch: profileForm.branch,
+        graduationYear: profileForm.graduationYear ? Number(profileForm.graduationYear) : undefined,
         contactPreferences: {
           showPhone: profileForm.showPhone,
           showEmail: profileForm.showEmail,
@@ -270,35 +284,40 @@ export default function DashboardPage() {
 
           {/* EDIT PROFILE */}
           {tab === 'profile' && (
-            <div className="max-w-lg">
+            <div className="max-w-xl">
               <h2 className="font-bold text-lg mb-6" style={{ color: '#163850' }}>Edit Profile</h2>
-              <div className="bg-white rounded-2xl p-6 shadow-sm space-y-5">
+
+              {/* Basic Info */}
+              <div className="bg-white rounded-2xl p-6 shadow-sm space-y-4 mb-4">
+                <h3 className="font-semibold text-sm uppercase tracking-wider" style={{ color: '#6b7280' }}>Basic Info</h3>
 
                 <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: '#6b7280' }}>Hostel</label>
-                  <select
-                    value={profileForm.hostel}
-                    onChange={(e) => setProfileForm((p) => ({ ...p, hostel: e.target.value }))}
-                    className="w-full px-3 py-2.5 rounded-lg border text-sm outline-none"
-                    style={{ borderColor: '#e2e8f0', color: '#163850' }}
-                  >
-                    <option value="">Select hostel…</option>
-                    {['Aibaan','Beauki','Chimair','Duven','Emiet','Firpeal','Griwiksh','Hiqom','Ijokha','Jurqia','Lekhaag'].map((h) => (
-                      <option key={h} value={h}>{h}</option>
-                    ))}
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: '#6b7280' }}>Phone Number</label>
+                  <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: '#6b7280' }}>Display Name</label>
                   <input
-                    type="tel"
-                    value={profileForm.phone}
-                    onChange={(e) => setProfileForm((p) => ({ ...p, phone: e.target.value }))}
-                    placeholder="e.g. 9876543210"
+                    type="text"
+                    value={profileForm.name}
+                    onChange={(e) => setProfileForm((p) => ({ ...p, name: e.target.value }))}
+                    placeholder="Your name"
                     className="w-full px-4 py-2.5 rounded-lg border text-sm outline-none"
                     style={{ borderColor: '#e2e8f0', color: '#163850' }}
                   />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: '#6b7280' }}>Mobile Number</label>
+                  <div className="flex gap-2">
+                    <span className="flex items-center px-3 rounded-lg border text-sm" style={{ borderColor: '#e2e8f0', color: '#6b7280', backgroundColor: '#f8fafc' }}>+91</span>
+                    <input
+                      type="tel"
+                      value={profileForm.phone}
+                      onChange={(e) => { if (/^\d{0,10}$/.test(e.target.value)) setProfileForm((p) => ({ ...p, phone: e.target.value })); }}
+                      placeholder="10-digit mobile"
+                      maxLength={10}
+                      className="flex-1 px-4 py-2.5 rounded-lg border text-sm outline-none"
+                      style={{ borderColor: '#e2e8f0', color: '#163850' }}
+                    />
+                  </div>
+                  <p className="text-xs mt-1" style={{ color: '#9ca3af' }}>Used by buyers to contact you directly (if enabled below)</p>
                 </div>
 
                 <div>
@@ -306,7 +325,7 @@ export default function DashboardPage() {
                   <textarea
                     value={profileForm.bio}
                     onChange={(e) => setProfileForm((p) => ({ ...p, bio: e.target.value }))}
-                    placeholder="Tell buyers a bit about yourself…"
+                    placeholder="A short intro — what you sell, your interests…"
                     rows={3}
                     maxLength={300}
                     className="w-full px-4 py-2.5 rounded-lg border text-sm resize-none outline-none"
@@ -314,47 +333,123 @@ export default function DashboardPage() {
                   />
                   <span className="text-xs" style={{ color: '#9ca3af' }}>{profileForm.bio.length}/300</span>
                 </div>
+              </div>
 
-                <div className="border-t pt-4 space-y-3">
-                  <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: '#6b7280' }}>Contact Visibility</p>
-                  <label className="flex items-center justify-between cursor-pointer">
-                    <div>
-                      <span className="text-sm font-medium" style={{ color: '#163850' }}>Show phone to buyers</span>
-                      <p className="text-xs" style={{ color: '#9ca3af' }}>Buyers can call you directly on the listing page</p>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => setProfileForm((p) => ({ ...p, showPhone: !p.showPhone }))}
-                      className="relative w-11 h-6 rounded-full transition-colors flex-shrink-0"
-                      style={{ backgroundColor: profileForm.showPhone ? '#079BD8' : '#e5e7eb' }}
+              {/* Academic Info */}
+              <div className="bg-white rounded-2xl p-6 shadow-sm space-y-4 mb-4">
+                <h3 className="font-semibold text-sm uppercase tracking-wider" style={{ color: '#6b7280' }}>Academic Info</h3>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: '#6b7280' }}>Program</label>
+                    <select
+                      value={profileForm.program}
+                      onChange={(e) => setProfileForm((p) => ({ ...p, program: e.target.value }))}
+                      className="w-full px-3 py-2.5 rounded-lg border text-sm outline-none"
+                      style={{ borderColor: '#e2e8f0', color: profileForm.program ? '#163850' : '#9ca3af' }}
                     >
-                      <span className="absolute top-0.5 w-5 h-5 rounded-full bg-white shadow transition-all" style={{ left: profileForm.showPhone ? '22px' : '2px' }} />
-                    </button>
-                  </label>
-                  <label className="flex items-center justify-between cursor-pointer">
-                    <div>
-                      <span className="text-sm font-medium" style={{ color: '#163850' }}>Show email to buyers</span>
-                      <p className="text-xs" style={{ color: '#9ca3af' }}>Buyers can email you directly</p>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => setProfileForm((p) => ({ ...p, showEmail: !p.showEmail }))}
-                      className="relative w-11 h-6 rounded-full transition-colors flex-shrink-0"
-                      style={{ backgroundColor: profileForm.showEmail ? '#079BD8' : '#e5e7eb' }}
+                      <option value="">Select…</option>
+                      {['BTech', 'MTech', 'MSc', 'MA', 'PhD', 'MBA', 'Other'].map((p) => (
+                        <option key={p} value={p}>{p}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: '#6b7280' }}>Graduation Year</label>
+                    <select
+                      value={profileForm.graduationYear}
+                      onChange={(e) => setProfileForm((p) => ({ ...p, graduationYear: e.target.value }))}
+                      className="w-full px-3 py-2.5 rounded-lg border text-sm outline-none"
+                      style={{ borderColor: '#e2e8f0', color: profileForm.graduationYear ? '#163850' : '#9ca3af' }}
                     >
-                      <span className="absolute top-0.5 w-5 h-5 rounded-full bg-white shadow transition-all" style={{ left: profileForm.showEmail ? '22px' : '2px' }} />
-                    </button>
-                  </label>
+                      <option value="">Year…</option>
+                      {Array.from({ length: 12 }, (_, i) => 2024 + i).map((y) => (
+                        <option key={y} value={y}>{y}</option>
+                      ))}
+                    </select>
+                  </div>
                 </div>
 
-                <button
-                  onClick={saveProfile}
-                  disabled={profileSaving}
-                  className="btn-primary w-full justify-center py-3"
-                >
-                  {profileSaving ? 'Saving…' : profileSaved ? '✅ Saved!' : 'Save Profile'}
-                </button>
+                <div>
+                  <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: '#6b7280' }}>Branch / Discipline</label>
+                  <input
+                    type="text"
+                    value={profileForm.branch}
+                    onChange={(e) => setProfileForm((p) => ({ ...p, branch: e.target.value }))}
+                    placeholder="e.g. Computer Science, Mechanical, Chemistry…"
+                    className="w-full px-4 py-2.5 rounded-lg border text-sm outline-none"
+                    style={{ borderColor: '#e2e8f0', color: '#163850' }}
+                  />
+                </div>
               </div>
+
+              {/* Hostel Info */}
+              <div className="bg-white rounded-2xl p-6 shadow-sm space-y-4 mb-4">
+                <h3 className="font-semibold text-sm uppercase tracking-wider" style={{ color: '#6b7280' }}>Hostel Info</h3>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: '#6b7280' }}>Hostel</label>
+                    <select
+                      value={profileForm.hostel}
+                      onChange={(e) => setProfileForm((p) => ({ ...p, hostel: e.target.value }))}
+                      className="w-full px-3 py-2.5 rounded-lg border text-sm outline-none"
+                      style={{ borderColor: '#e2e8f0', color: profileForm.hostel ? '#163850' : '#9ca3af' }}
+                    >
+                      <option value="">Select…</option>
+                      {['Aibaan','Beauki','Chimair','Duven','Emiet','Firpeal','Griwiksh','Hiqom','Ijokha','Jurqia','Lekhaag'].map((h) => (
+                        <option key={h} value={h}>{h}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: '#6b7280' }}>Wing / Room</label>
+                    <input
+                      type="text"
+                      value={profileForm.wing}
+                      onChange={(e) => setProfileForm((p) => ({ ...p, wing: e.target.value }))}
+                      placeholder="e.g. A-Wing, Room 204"
+                      className="w-full px-4 py-2.5 rounded-lg border text-sm outline-none"
+                      style={{ borderColor: '#e2e8f0', color: '#163850' }}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Contact Visibility */}
+              <div className="bg-white rounded-2xl p-6 shadow-sm space-y-4 mb-4">
+                <h3 className="font-semibold text-sm uppercase tracking-wider" style={{ color: '#6b7280' }}>Contact Visibility</h3>
+
+                {[
+                  { key: 'showPhone', label: 'Show mobile to buyers', desc: 'Buyers can call/WhatsApp you from the listing page' },
+                  { key: 'showEmail', label: 'Show email to buyers', desc: 'Buyers can email you directly' },
+                ].map(({ key, label, desc }) => (
+                  <div key={key} className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium" style={{ color: '#163850' }}>{label}</p>
+                      <p className="text-xs" style={{ color: '#9ca3af' }}>{desc}</p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setProfileForm((p) => ({ ...p, [key]: !p[key as keyof typeof p] }))}
+                      className="relative w-11 h-6 rounded-full transition-colors flex-shrink-0"
+                      style={{ backgroundColor: profileForm[key as keyof typeof profileForm] ? '#079BD8' : '#e5e7eb' }}
+                    >
+                      <span className="absolute top-0.5 w-5 h-5 rounded-full bg-white shadow transition-all" style={{ left: profileForm[key as keyof typeof profileForm] ? '22px' : '2px' }} />
+                    </button>
+                  </div>
+                ))}
+              </div>
+
+              <button
+                onClick={saveProfile}
+                disabled={profileSaving}
+                className="btn-primary w-full justify-center py-3 text-base"
+              >
+                {profileSaving ? 'Saving…' : profileSaved ? '✅ Profile Saved!' : 'Save Profile'}
+              </button>
             </div>
           )}
         </div>

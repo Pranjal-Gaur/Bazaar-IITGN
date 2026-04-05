@@ -8,6 +8,9 @@ export interface IUser extends Document {
   wing?: string;
   phone?: string;
   bio?: string;
+  program?: string;
+  branch?: string;
+  graduationYear?: number;
   karmaScore: number;
   role: 'buyer' | 'seller' | 'admin';
   totalSales: number;
@@ -43,6 +46,9 @@ const UserSchema = new Schema<IUser>(
     wing: { type: String },
     phone: { type: String },
     bio: { type: String, maxlength: 300 },
+    program: { type: String, enum: ['BTech', 'MTech', 'MSc', 'MA', 'PhD', 'MBA', 'Other'] },
+    branch: { type: String },
+    graduationYear: { type: Number, min: 2020, max: 2035 },
     karmaScore: { type: Number, default: 10 },
     role: { type: String, enum: ['buyer', 'seller', 'admin'], default: 'buyer' },
     totalSales: { type: Number, default: 0 },

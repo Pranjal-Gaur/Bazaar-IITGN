@@ -12,7 +12,7 @@ type Params = { params: Promise<{ id: string }> };
 // PATCH /api/offers/[id] — accept | reject | counter | confirm-handshake
 export async function PATCH(req: NextRequest, { params }: Params) {
   const session = await getServerSession(authOptions);
-  if (!session?.user?.id) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  if (!session?.user?.email) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
   const { id } = await params;
   await connectDB();

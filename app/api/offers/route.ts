@@ -32,9 +32,18 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
-    if (!session?.user?.id) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    if (!session?.user?.email) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
     await connectDB();
+
+    // Resolve user id from DB if not in session token (happens when token was issued before id was set)
+    let userId = session.user.id;
+    if (!userId) {
+      const dbUser = await User.findOne({ email: session.user.email }).select('_id').lean() as { _id: { toString(): string } } | null;
+      if (!dbUser) return NextResponse.json({ error: 'User not found' }, { status: 404 });
+      userId = dbUser._id.toString();
+    }
+
     const { listingId, proposedPrice, message } = await req.json();
 
     if (!listingId || !proposedPrice) {
@@ -51,7 +60,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Room ID: sorted user IDs + listingId for uniqueness
-    const ids = [session.user.id, listing.seller.email].sort().join('-');
+    const ids = [userId, listing.seller.email].sort().join('-');
     const roomId = `${listingId}-${ids}`;
 
     // Check for existing pending offer from this buyer on this listing
@@ -73,7 +82,7 @@ export async function POST(req: NextRequest) {
     const offer = await Offer.create({
       listing: listingId,
       buyer: {
-        id: new mongoose.Types.ObjectId(session.user.id),
+        id: new mongoose.Types.ObjectId(userId),
         name: session.user.name ?? '',
         email: session.user.email ?? '',
         hostel: session.user.hostel ?? '',
@@ -95,7 +104,7 @@ export async function POST(req: NextRequest) {
       roomId,
       listing: listingId,
       sender: {
-        id: session.user.id,
+        id: userId,
         name: session.user.name ?? '',
         email: session.user.email ?? '',
         image: session.user.image ?? '',

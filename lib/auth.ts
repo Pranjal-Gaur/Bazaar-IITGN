@@ -59,10 +59,12 @@ export const authOptions: NextAuthOptions = {
     },
 
     async jwt({ token, user }) {
-      if (user?.email) {
+      // Fetch from DB on first sign-in OR whenever id is missing (e.g. cold start)
+      if (user?.email || (!token.id && token.email)) {
+        const email = (user?.email ?? token.email) as string;
         try {
           await connectDB();
-          const dbUser = await User.findOne({ email: user.email }).lean() as {
+          const dbUser = await User.findOne({ email }).lean() as {
             _id: { toString(): string };
             hostel?: string;
             karmaScore?: number;
