@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useSession, signIn } from 'next-auth/react';
+import { useNotifications, getNotificationsEnabled } from '@/hooks/useNotifications';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import ListingCard from '@/components/ListingCard';
@@ -9,8 +10,21 @@ import OfferModal from '@/components/OfferModal';
 import ReviewModal from '@/components/ReviewModal';
 import Link from 'next/link';
 import { Listing } from '@/types';
+import ChatWindow from '@/components/ChatWindow';
 
-type Tab = 'listings' | 'offers' | 'watchlist' | 'profile';
+type Tab = 'listings' | 'offers' | 'watchlist' | 'messages' | 'notifications' | 'profile';
+
+interface Conversation {
+  roomId: string;
+  listingId: string;
+  listingTitle: string;
+  listingImage: string | null;
+  otherParty: { name: string; email: string };
+  latestContent: string;
+  latestAt: string;
+  latestSenderEmail: string;
+}
+
 
 interface Offer {
   _id: string;
@@ -24,6 +38,27 @@ interface Offer {
   message?: string;
   buyerConfirmed: boolean;
   sellerConfirmed: boolean;
+  createdAt: string;
+}
+
+interface NotifOffer {
+  _id: string;
+  listing: { _id: string; title: string; price: number; images: string[] } | null;
+  buyer: { name: string; email: string; hostel: string };
+  seller: { name: string; email: string };
+  proposedPrice: number;
+  status: string;
+  message?: string;
+  updatedAt: string;
+  createdAt: string;
+}
+
+interface NotifMessage {
+  _id: string;
+  roomId: string;
+  listing: string;
+  sender: { name: string; email: string; image?: string };
+  content: string;
   createdAt: string;
 }
 
@@ -43,6 +78,9 @@ export default function DashboardPage() {
   const [buyerOffers, setBuyerOffers] = useState<Offer[]>([]);
   const [sellerOffers, setSellerOffers] = useState<Offer[]>([]);
   const [watchlist, setWatchlist] = useState<Listing[]>([]);
+  const [notifications, setNotifications] = useState<{ offers: NotifOffer[]; messages: NotifMessage[] }>({ offers: [], messages: [] });
+  const [conversations, setConversations] = useState<Conversation[]>([]);
+  const [activeConv, setActiveConv] = useState<Conversation | null>(null);
   const [loading, setLoading] = useState(true);
   const [activeOffer, setActiveOffer] = useState<Offer | null>(null);
   const [showReview, setShowReview] = useState<string | null>(null);
@@ -52,6 +90,10 @@ export default function DashboardPage() {
     showPhone: false, showEmail: true,
   });
   const [profileSaving, setProfileSaving] = useState(false);
+  const [notifEnabled, setNotifEnabled] = useState(false);
+  const { enable: enableNotif, disable: disableNotif } = useNotifications();
+
+  useEffect(() => { setNotifEnabled(getNotificationsEnabled()); }, []);
   const [profileSaved, setProfileSaved] = useState(false);
 
   useEffect(() => {
@@ -59,12 +101,14 @@ export default function DashboardPage() {
     if (status !== 'authenticated') return;
 
     async function load() {
-      const [listingsRes, buyRes, sellRes, wlRes, profileRes] = await Promise.all([
+      const [listingsRes, buyRes, sellRes, wlRes, profileRes, notifRes, convRes] = await Promise.all([
         fetch(`/api/listings?status=all`),
         fetch('/api/offers?as=buyer'),
         fetch('/api/offers?as=seller'),
         fetch('/api/watchlist'),
         fetch(`/api/users/${session?.user?.id}`),
+        fetch('/api/notifications'),
+        fetch('/api/messages/conversations'),
       ]);
 
       const listingsData = await listingsRes.json();
@@ -75,6 +119,8 @@ export default function DashboardPage() {
       if (buyRes.ok) setBuyerOffers((await buyRes.json()).offers ?? []);
       if (sellRes.ok) setSellerOffers((await sellRes.json()).offers ?? []);
       if (wlRes.ok) setWatchlist((await wlRes.json()).listings ?? []);
+      if (notifRes.ok) setNotifications(await notifRes.json());
+      if (convRes.ok) setConversations((await convRes.json()).conversations ?? []);
       if (profileRes.ok) {
         const pd = await profileRes.json();
         const u = pd.user;
@@ -104,10 +150,13 @@ export default function DashboardPage() {
     );
   }
 
+  const pendingOfferNotifs = notifications.offers.filter((o) => o.status === 'pending' || o.status === 'countered').length;
   const TABS: { key: Tab; label: string; count: number }[] = [
     { key: 'listings', label: 'My Listings', count: myListings.length },
     { key: 'offers', label: 'Offers', count: buyerOffers.length + sellerOffers.length },
     { key: 'watchlist', label: 'Watchlist', count: watchlist.length },
+    { key: 'messages', label: 'Messages', count: conversations.length },
+    { key: 'notifications', label: 'Notifications', count: pendingOfferNotifs + notifications.messages.length },
     { key: 'profile', label: 'Edit Profile', count: 0 },
   ];
 
@@ -282,6 +331,183 @@ export default function DashboardPage() {
             </div>
           )}
 
+          {/* MESSAGES */}
+          {tab === 'messages' && (
+            <div className="flex gap-6 h-[600px]">
+              {/* Conversation list */}
+              <div className="w-80 flex-shrink-0 bg-white rounded-2xl shadow-sm overflow-y-auto">
+                <div className="p-4 border-b">
+                  <h2 className="font-bold" style={{ color: '#163850' }}>Conversations</h2>
+                </div>
+                {conversations.length === 0 ? (
+                  <div className="text-center py-12 px-4">
+                    <div className="text-4xl mb-3">💬</div>
+                    <p className="text-sm" style={{ color: '#6b7280' }}>No conversations yet</p>
+                    <p className="text-xs mt-1" style={{ color: '#9ca3af' }}>Start chatting from a listing page</p>
+                  </div>
+                ) : (
+                  <div className="divide-y">
+                    {conversations.map((conv) => {
+                      const isMe = conv.latestSenderEmail === session?.user?.email;
+                      const isActive = activeConv?.roomId === conv.roomId;
+                      return (
+                        <button
+                          key={conv.roomId}
+                          onClick={() => setActiveConv(isActive ? null : conv)}
+                          className="w-full text-left px-4 py-3 transition-colors hover:bg-gray-50"
+                          style={{ backgroundColor: isActive ? '#e8f4fd' : undefined }}
+                        >
+                          <div className="flex items-center gap-3">
+                            <div className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold text-white flex-shrink-0" style={{ backgroundColor: '#163850' }}>
+                              {conv.otherParty.name?.[0]?.toUpperCase() ?? '?'}
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-baseline justify-between gap-1">
+                                <p className="font-semibold text-sm truncate" style={{ color: '#163850' }}>
+                                  {conv.otherParty.name || conv.otherParty.email}
+                                </p>
+                                <span className="text-xs flex-shrink-0" style={{ color: '#9ca3af' }}>
+                                  {new Date(conv.latestAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}
+                                </span>
+                              </div>
+                              <p className="text-xs truncate" style={{ color: '#6b7280' }}>
+                                {conv.listingTitle}
+                              </p>
+                              <p className="text-xs truncate mt-0.5" style={{ color: '#9ca3af' }}>
+                                {isMe ? 'You: ' : ''}{conv.latestContent}
+                              </p>
+                            </div>
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+
+              {/* Chat pane */}
+              <div className="flex-1 min-w-0">
+                {activeConv ? (
+                  <div className="h-full flex flex-col">
+                    <div className="mb-3 flex items-center gap-2">
+                      <span className="font-semibold text-sm" style={{ color: '#163850' }}>
+                        {activeConv.otherParty.name || activeConv.otherParty.email}
+                      </span>
+                      <span className="text-xs" style={{ color: '#6b7280' }}>· {activeConv.listingTitle}</span>
+                    </div>
+                    <div className="flex-1">
+                      <ChatWindow
+                        listingId={activeConv.listingId}
+                        roomId={activeConv.roomId}
+                        otherPartyName={activeConv.otherParty.name || activeConv.otherParty.email}
+                      />
+                    </div>
+                  </div>
+                ) : (
+                  <div className="h-full bg-white rounded-2xl shadow-sm flex items-center justify-center">
+                    <div className="text-center">
+                      <div className="text-5xl mb-3">👈</div>
+                      <p className="text-sm" style={{ color: '#6b7280' }}>Select a conversation to open chat</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* NOTIFICATIONS */}
+          {tab === 'notifications' && (
+            <div className="space-y-8">
+              {/* Offer notifications */}
+              <div>
+                <h2 className="font-bold text-lg mb-4" style={{ color: '#163850' }}>
+                  Offers on My Items ({notifications.offers.length})
+                </h2>
+                {notifications.offers.length === 0 ? (
+                  <div className="text-center py-10 bg-white rounded-2xl">
+                    <div className="text-4xl mb-3">🤝</div>
+                    <p className="text-sm" style={{ color: '#6b7280' }}>No offers received yet</p>
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    {notifications.offers.map((offer) => {
+                      const statusColor = STATUS_COLORS[offer.status] ?? STATUS_COLORS.pending;
+                      return (
+                        <div key={offer._id} className="bg-white rounded-xl p-4 shadow-sm flex items-start gap-3">
+                          {offer.listing?.images?.[0] && (
+                            <img src={offer.listing.images[0]} alt="" className="w-14 h-14 rounded-lg object-cover flex-shrink-0" />
+                          )}
+                          <div className="flex-1 min-w-0">
+                            <p className="font-semibold text-sm truncate" style={{ color: '#163850' }}>
+                              {offer.listing?.title ?? 'Listing'}
+                            </p>
+                            <div className="flex items-center gap-2 mt-0.5">
+                              <span className="text-xs px-2 py-0.5 rounded-full font-semibold" style={{ backgroundColor: statusColor.bg, color: statusColor.text }}>
+                                {offer.status}
+                              </span>
+                              <span className="text-xs" style={{ color: '#6b7280' }}>from {offer.buyer.name}</span>
+                              {offer.buyer.hostel && (
+                                <span className="text-xs" style={{ color: '#9ca3af' }}>· {offer.buyer.hostel}</span>
+                              )}
+                            </div>
+                            {offer.message && (
+                              <p className="text-xs mt-1 italic truncate" style={{ color: '#9ca3af' }}>"{offer.message}"</p>
+                            )}
+                          </div>
+                          <div className="text-right flex-shrink-0">
+                            <div className="font-bold text-sm" style={{ color: '#079BD8' }}>₹{offer.proposedPrice.toLocaleString()}</div>
+                            <div className="text-xs mt-0.5" style={{ color: '#9ca3af' }}>
+                              {new Date(offer.updatedAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+
+              {/* Message notifications */}
+              <div>
+                <h2 className="font-bold text-lg mb-4" style={{ color: '#163850' }}>
+                  Recent Messages ({notifications.messages.length})
+                </h2>
+                {notifications.messages.length === 0 ? (
+                  <div className="text-center py-10 bg-white rounded-2xl">
+                    <div className="text-4xl mb-3">💬</div>
+                    <p className="text-sm" style={{ color: '#6b7280' }}>No messages yet</p>
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    {notifications.messages.map((msg) => (
+                      <div key={msg._id} className="bg-white rounded-xl p-4 shadow-sm flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold text-white flex-shrink-0" style={{ backgroundColor: '#079BD8' }}>
+                          {msg.sender.name?.[0]?.toUpperCase()}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-semibold text-sm" style={{ color: '#163850' }}>{msg.sender.name}</p>
+                          <p className="text-sm truncate" style={{ color: '#6b7280' }}>{msg.content}</p>
+                        </div>
+                        <div className="text-right flex-shrink-0">
+                          <div className="text-xs" style={{ color: '#9ca3af' }}>
+                            {new Date(msg.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}
+                          </div>
+                          <a
+                            href={`/listings/${msg.listing}`}
+                            className="text-xs font-semibold mt-0.5 block"
+                            style={{ color: '#079BD8' }}
+                          >
+                            View listing →
+                          </a>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
           {/* EDIT PROFILE */}
           {tab === 'profile' && (
             <div className="max-w-xl">
@@ -441,6 +667,34 @@ export default function DashboardPage() {
                     </button>
                   </div>
                 ))}
+              </div>
+
+              {/* Push Notifications */}
+              <div className="bg-white rounded-2xl p-6 shadow-sm space-y-4 mb-4">
+                <h3 className="font-semibold text-sm uppercase tracking-wider" style={{ color: '#6b7280' }}>Notifications</h3>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium" style={{ color: '#163850' }}>Enable push notifications</p>
+                    <p className="text-xs mt-0.5" style={{ color: '#9ca3af' }}>Get notified when you receive a message or offer</p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      if (notifEnabled) {
+                        disableNotif();
+                        setNotifEnabled(false);
+                      } else {
+                        const granted = await enableNotif();
+                        setNotifEnabled(granted);
+                        if (!granted) alert('Please allow notifications in your browser settings.');
+                      }
+                    }}
+                    className="relative w-11 h-6 rounded-full transition-colors flex-shrink-0"
+                    style={{ backgroundColor: notifEnabled ? '#079BD8' : '#e5e7eb' }}
+                  >
+                    <span className="absolute top-0.5 w-5 h-5 rounded-full bg-white shadow transition-all" style={{ left: notifEnabled ? '22px' : '2px' }} />
+                  </button>
+                </div>
               </div>
 
               <button

@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useSession } from 'next-auth/react';
 import { connectSocket } from '@/lib/socket';
+import { useNotifications } from '@/hooks/useNotifications';
 
 interface Message {
   _id: string;
@@ -26,6 +27,7 @@ export default function ChatWindow({ listingId, roomId, otherPartyName }: Props)
   const [typing, setTyping] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
   const typingTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const { notify } = useNotifications();
 
   // Load history
   useEffect(() => {
@@ -48,6 +50,7 @@ export default function ChatWindow({ listingId, roomId, otherPartyName }: Props)
         if (prev.some((m) => m._id === msg._id)) return prev;
         return [...prev, msg];
       });
+      notify(`New message from ${msg.sender.name}`, msg.content);
     });
 
     socket.on('user-typing', ({ name }: { name: string }) => {

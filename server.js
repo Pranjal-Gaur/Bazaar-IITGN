@@ -32,15 +32,9 @@ app.prepare().then(() => {
       socket.leave(roomId);
     });
 
-    // Real-time message
+    // Real-time message — use socket.to() so sender doesn't get echo (they already have optimistic update)
     socket.on('send-message', (data) => {
-      // data: { roomId, content, senderId, senderName, senderImage }
-      const message = {
-        ...data,
-        _id: `${Date.now()}-${Math.random().toString(36).slice(2)}`,
-        createdAt: new Date().toISOString(),
-      };
-      io.to(data.roomId).emit('receive-message', message);
+      socket.to(data.roomId).emit('receive-message', data);
     });
 
     // Offer state update broadcast

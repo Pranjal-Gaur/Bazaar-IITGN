@@ -35,6 +35,9 @@ export default function ListingDetailPage() {
   const [watchlisted, setWatchlisted] = useState(false);
   const [existingOffer, setExistingOffer] = useState(null);
   const [roomId, setRoomId] = useState('');
+  const [buyerConversations, setBuyerConversations] = useState<{ roomId: string; otherParty: { name: string; email: string }; latestContent: string; latestAt: string }[]>([]);
+  const [activeBuyerRoom, setActiveBuyerRoom] = useState('');
+  const [activeBuyerName, setActiveBuyerName] = useState('');
   const [sellerProfile, setSellerProfile] = useState<{ phone?: string; bio?: string; contactPreferences?: { showPhone: boolean; showEmail: boolean } } | null>(null);
 
   useEffect(() => {
@@ -56,15 +59,23 @@ export default function ListingDetailPage() {
           setSellerProfile(profileData.user);
         }
 
-        // Check if user has an offer
+        // Check if user has an offer / set up chat room
         if (session?.user?.id) {
-          const userIds = [session.user.id, data.seller.email].sort().join('-');
-          const rid = `${id}-${userIds}`;
-          setRoomId(rid);
-
-          const offerRes = await fetch(`/api/offers?listingId=${id}&as=buyer`);
-          const offerData = await offerRes.json();
-          if (offerData.offers?.length) setExistingOffer(offerData.offers[0]);
+          const isSeller = session.user.email === data.seller.email;
+          if (!isSeller) {
+            const userIds = [session.user.id, data.seller.email].sort().join('-');
+            setRoomId(`${id}-${userIds}`);
+            const offerRes = await fetch(`/api/offers?listingId=${id}&as=buyer`);
+            const offerData = await offerRes.json();
+            if (offerData.offers?.length) setExistingOffer(offerData.offers[0]);
+          } else {
+            // Seller: load all buyer conversations for this listing
+            const convRes = await fetch(`/api/messages/conversations?listingId=${id}`);
+            if (convRes.ok) {
+              const convData = await convRes.json();
+              setBuyerConversations(convData.conversations ?? []);
+            }
+          }
         }
       } finally {
         setLoading(false);
@@ -241,7 +252,7 @@ export default function ListingDetailPage() {
                 </div>
               )}
 
-              {/* Chat section */}
+              {/* Chat section — buyer */}
               {!isSeller && (
                 <div>
                   <button
@@ -255,11 +266,61 @@ export default function ListingDetailPage() {
                     {showChat ? 'Hide Chat' : 'Chat with Seller'}
                   </button>
                   {showChat && roomId && (
-                    <ChatWindow
-                      listingId={id}
-                      roomId={roomId}
-                      otherPartyName={listing.seller.name}
-                    />
+                    <ChatWindow listingId={id} roomId={roomId} otherPartyName={listing.seller.name} />
+                  )}
+                </div>
+              )}
+
+              {/* Chat section — seller sees all buyer conversations */}
+              {isSeller && (
+                <div className="bg-white rounded-2xl p-5 shadow-sm">
+                  <h3 className="font-semibold mb-4" style={{ color: '#163850' }}>
+                    💬 Buyer Messages ({buyerConversations.length})
+                  </h3>
+                  {buyerConversations.length === 0 ? (
+                    <p className="text-sm text-center py-4" style={{ color: '#9ca3af' }}>No messages from buyers yet.</p>
+                  ) : (
+                    <div className="space-y-2">
+                      {buyerConversations.map((conv) => (
+                        <button
+                          key={conv.roomId}
+                          onClick={() => {
+                            if (activeBuyerRoom === conv.roomId) {
+                              setActiveBuyerRoom('');
+                              setActiveBuyerName('');
+                            } else {
+                              setActiveBuyerRoom(conv.roomId);
+                              setActiveBuyerName(conv.otherParty.name || conv.otherParty.email);
+                            }
+                          }}
+                          className="w-full text-left px-4 py-3 rounded-xl border transition-colors"
+                          style={{
+                            borderColor: activeBuyerRoom === conv.roomId ? '#079BD8' : '#e2e8f0',
+                            backgroundColor: activeBuyerRoom === conv.roomId ? '#e8f4fd' : 'white',
+                          }}
+                        >
+                          <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold text-white flex-shrink-0" style={{ backgroundColor: '#163850' }}>
+                              {(conv.otherParty.name || conv.otherParty.email)?.[0]?.toUpperCase()}
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <p className="font-semibold text-sm" style={{ color: '#163850' }}>
+                                {conv.otherParty.name || conv.otherParty.email}
+                              </p>
+                              <p className="text-xs truncate" style={{ color: '#6b7280' }}>{conv.latestContent}</p>
+                            </div>
+                            <span className="text-xs flex-shrink-0" style={{ color: '#9ca3af' }}>
+                              {new Date(conv.latestAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}
+                            </span>
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                  {activeBuyerRoom && (
+                    <div className="mt-4">
+                      <ChatWindow listingId={id} roomId={activeBuyerRoom} otherPartyName={activeBuyerName} />
+                    </div>
                   )}
                 </div>
               )}
