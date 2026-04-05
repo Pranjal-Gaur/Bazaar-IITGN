@@ -126,7 +126,7 @@ export default function ChatWindow({ listingId, roomId, otherPartyName }: Props)
   }
 
   return (
-    <div className="flex flex-col h-96 bg-white rounded-xl border border-gray-100 overflow-hidden">
+    <div className="flex flex-col h-96 rounded-xl border overflow-hidden" style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border)' }}>
       {/* Header */}
       <div className="flex items-center gap-2 px-4 py-3 border-b" style={{ backgroundColor: '#163850' }}>
         <div className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold text-white" style={{ backgroundColor: '#079BD8' }}>
@@ -139,7 +139,7 @@ export default function ChatWindow({ listingId, roomId, otherPartyName }: Props)
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-3" style={{ backgroundColor: '#f8fafc' }}>
+      <div className="flex-1 overflow-y-auto p-4 space-y-3" style={{ backgroundColor: 'var(--bg-page)' }}>
         {loading ? (
           <div className="flex justify-center py-8">
             <div className="w-6 h-6 border-2 rounded-full animate-spin" style={{ borderColor: '#079BD8', borderTopColor: 'transparent' }} />
@@ -172,8 +172,8 @@ export default function ChatWindow({ listingId, roomId, otherPartyName }: Props)
                   <div
                     className="px-4 py-2 rounded-2xl text-sm leading-relaxed"
                     style={{
-                      backgroundColor: isMe ? '#163850' : 'white',
-                      color: isMe ? 'white' : '#1a2e3d',
+                      backgroundColor: isMe ? '#163850' : 'var(--bg-card)',
+                      color: isMe ? 'white' : 'var(--text-primary)',
                       borderBottomRightRadius: isMe ? '4px' : '16px',
                       borderBottomLeftRadius: isMe ? '16px' : '4px',
                       boxShadow: '0 1px 2px rgba(0,0,0,0.05)',
@@ -190,7 +190,7 @@ export default function ChatWindow({ listingId, roomId, otherPartyName }: Props)
 
         {typing && (
           <div className="flex justify-start">
-            <div className="px-4 py-2 rounded-2xl text-sm" style={{ backgroundColor: 'white', color: '#9ca3af' }}>
+            <div className="px-4 py-2 rounded-2xl text-sm" style={{ backgroundColor: 'var(--bg-card)', color: 'var(--text-muted)' }}>
               <span className="inline-flex gap-1">
                 <span className="w-1.5 h-1.5 rounded-full bg-gray-400 animate-bounce" style={{ animationDelay: '0ms' }} />
                 <span className="w-1.5 h-1.5 rounded-full bg-gray-400 animate-bounce" style={{ animationDelay: '150ms' }} />
@@ -203,7 +203,7 @@ export default function ChatWindow({ listingId, roomId, otherPartyName }: Props)
       </div>
 
       {/* Input */}
-      <div className="px-4 py-3 border-t bg-white flex items-center gap-2">
+      <div className="px-4 py-3 border-t flex items-center gap-2" style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border)' }}>
         {session ? (
           <>
             <textarea
@@ -213,7 +213,7 @@ export default function ChatWindow({ listingId, roomId, otherPartyName }: Props)
               placeholder="Type a message… (Enter to send)"
               rows={1}
               className="flex-1 px-3 py-2 rounded-lg text-sm border resize-none outline-none focus:ring-2"
-              style={{ borderColor: '#e2e8f0', color: '#163850' }}
+              style={{ borderColor: 'var(--border)', color: 'var(--text-primary)', backgroundColor: 'var(--bg-input)' }}
             />
             <button
               onClick={sendMessage}

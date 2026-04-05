@@ -190,7 +190,7 @@ export default function DashboardPage() {
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar />
-      <main className="flex-1" style={{ backgroundColor: '#f8fafc' }}>
+      <main className="flex-1" style={{ backgroundColor: 'var(--bg-page)' }}>
         {/* Header */}
         <div className="py-8" style={{ backgroundColor: '#163850' }}>
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -250,15 +250,15 @@ export default function DashboardPage() {
           {tab === 'listings' && (
             <div>
               <div className="flex items-center justify-between mb-6">
-                <h2 className="font-bold text-lg" style={{ color: '#163850' }}>Items I'm Selling</h2>
+                <h2 className="font-bold text-lg" style={{ color: 'var(--text-primary)' }}>Items I'm Selling</h2>
                 <Link href="/listings/new" className="btn-primary text-sm">+ New Listing</Link>
               </div>
 
               {myListings.length === 0 ? (
                 <div className="text-center py-16 bg-white rounded-2xl">
                   <div className="text-5xl mb-4">📦</div>
-                  <h3 className="font-bold mb-2" style={{ color: '#163850' }}>No listings yet</h3>
-                  <p className="text-sm mb-6" style={{ color: '#6b7280' }}>Start selling your items to the IITGN community</p>
+                  <h3 className="font-bold mb-2" style={{ color: 'var(--text-primary)' }}>No listings yet</h3>
+                  <p className="text-sm mb-6" style={{ color: 'var(--text-secondary)' }}>Start selling your items to the IITGN community</p>
                   <Link href="/listings/new" className="btn-primary">Post your first item</Link>
                 </div>
               ) : (
@@ -275,7 +275,7 @@ export default function DashboardPage() {
               {/* Offers on my listings */}
               {sellerOffers.length > 0 && (
                 <div>
-                  <h2 className="font-bold text-lg mb-4" style={{ color: '#163850' }}>Offers on My Items ({sellerOffers.length})</h2>
+                  <h2 className="font-bold text-lg mb-4" style={{ color: 'var(--text-primary)' }}>Offers on My Items ({sellerOffers.length})</h2>
                   <div className="space-y-3">
                     {sellerOffers.map((offer) => (
                       <OfferRow key={offer._id} offer={offer} perspective="seller" onAction={() => setActiveOffer(offer)} />
@@ -287,7 +287,7 @@ export default function DashboardPage() {
               {/* My offers as buyer */}
               {buyerOffers.length > 0 && (
                 <div>
-                  <h2 className="font-bold text-lg mb-4" style={{ color: '#163850' }}>My Offers ({buyerOffers.length})</h2>
+                  <h2 className="font-bold text-lg mb-4" style={{ color: 'var(--text-primary)' }}>My Offers ({buyerOffers.length})</h2>
                   <div className="space-y-3">
                     {buyerOffers.map((offer) => (
                       <OfferRow
@@ -305,8 +305,8 @@ export default function DashboardPage() {
               {sellerOffers.length === 0 && buyerOffers.length === 0 && (
                 <div className="text-center py-16 bg-white rounded-2xl">
                   <div className="text-5xl mb-4">🤝</div>
-                  <h3 className="font-bold mb-2" style={{ color: '#163850' }}>No offers yet</h3>
-                  <p className="text-sm" style={{ color: '#6b7280' }}>Make an offer on a listing or wait for buyers to offer on your items</p>
+                  <h3 className="font-bold mb-2" style={{ color: 'var(--text-primary)' }}>No offers yet</h3>
+                  <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>Make an offer on a listing or wait for buyers to offer on your items</p>
                 </div>
               )}
             </div>
@@ -315,12 +315,12 @@ export default function DashboardPage() {
           {/* WATCHLIST */}
           {tab === 'watchlist' && (
             <div>
-              <h2 className="font-bold text-lg mb-6" style={{ color: '#163850' }}>Saved Items</h2>
+              <h2 className="font-bold text-lg mb-6" style={{ color: 'var(--text-primary)' }}>Saved Items</h2>
               {watchlist.length === 0 ? (
                 <div className="text-center py-16 bg-white rounded-2xl">
                   <div className="text-5xl mb-4">⭐</div>
-                  <h3 className="font-bold mb-2" style={{ color: '#163850' }}>Watchlist is empty</h3>
-                  <p className="text-sm mb-6" style={{ color: '#6b7280' }}>Save listings you're interested in</p>
+                  <h3 className="font-bold mb-2" style={{ color: 'var(--text-primary)' }}>Watchlist is empty</h3>
+                  <p className="text-sm mb-6" style={{ color: 'var(--text-secondary)' }}>Save listings you're interested in</p>
                   <Link href="/listings" className="btn-primary">Browse Listings</Link>
                 </div>
               ) : (
@@ -337,13 +337,13 @@ export default function DashboardPage() {
               {/* Conversation list */}
               <div className="w-80 flex-shrink-0 bg-white rounded-2xl shadow-sm overflow-y-auto">
                 <div className="p-4 border-b">
-                  <h2 className="font-bold" style={{ color: '#163850' }}>Conversations</h2>
+                  <h2 className="font-bold" style={{ color: 'var(--text-primary)' }}>Conversations</h2>
                 </div>
                 {conversations.length === 0 ? (
                   <div className="text-center py-12 px-4">
                     <div className="text-4xl mb-3">💬</div>
-                    <p className="text-sm" style={{ color: '#6b7280' }}>No conversations yet</p>
-                    <p className="text-xs mt-1" style={{ color: '#9ca3af' }}>Start chatting from a listing page</p>
+                    <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>No conversations yet</p>
+                    <p className="text-xs mt-1" style={{ color: 'var(--text-muted)' }}>Start chatting from a listing page</p>
                   </div>
                 ) : (
                   <div className="divide-y">
@@ -363,17 +363,17 @@ export default function DashboardPage() {
                             </div>
                             <div className="flex-1 min-w-0">
                               <div className="flex items-baseline justify-between gap-1">
-                                <p className="font-semibold text-sm truncate" style={{ color: '#163850' }}>
+                                <p className="font-semibold text-sm truncate" style={{ color: 'var(--text-primary)' }}>
                                   {conv.otherParty.name || conv.otherParty.email}
                                 </p>
-                                <span className="text-xs flex-shrink-0" style={{ color: '#9ca3af' }}>
+                                <span className="text-xs flex-shrink-0" style={{ color: 'var(--text-muted)' }}>
                                   {new Date(conv.latestAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}
                                 </span>
                               </div>
-                              <p className="text-xs truncate" style={{ color: '#6b7280' }}>
+                              <p className="text-xs truncate" style={{ color: 'var(--text-secondary)' }}>
                                 {conv.listingTitle}
                               </p>
-                              <p className="text-xs truncate mt-0.5" style={{ color: '#9ca3af' }}>
+                              <p className="text-xs truncate mt-0.5" style={{ color: 'var(--text-muted)' }}>
                                 {isMe ? 'You: ' : ''}{conv.latestContent}
                               </p>
                             </div>
@@ -390,10 +390,10 @@ export default function DashboardPage() {
                 {activeConv ? (
                   <div className="h-full flex flex-col">
                     <div className="mb-3 flex items-center gap-2">
-                      <span className="font-semibold text-sm" style={{ color: '#163850' }}>
+                      <span className="font-semibold text-sm" style={{ color: 'var(--text-primary)' }}>
                         {activeConv.otherParty.name || activeConv.otherParty.email}
                       </span>
-                      <span className="text-xs" style={{ color: '#6b7280' }}>· {activeConv.listingTitle}</span>
+                      <span className="text-xs" style={{ color: 'var(--text-secondary)' }}>· {activeConv.listingTitle}</span>
                     </div>
                     <div className="flex-1">
                       <ChatWindow
@@ -407,7 +407,7 @@ export default function DashboardPage() {
                   <div className="h-full bg-white rounded-2xl shadow-sm flex items-center justify-center">
                     <div className="text-center">
                       <div className="text-5xl mb-3">👈</div>
-                      <p className="text-sm" style={{ color: '#6b7280' }}>Select a conversation to open chat</p>
+                      <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>Select a conversation to open chat</p>
                     </div>
                   </div>
                 )}
@@ -420,43 +420,43 @@ export default function DashboardPage() {
             <div className="space-y-8">
               {/* Offer notifications */}
               <div>
-                <h2 className="font-bold text-lg mb-4" style={{ color: '#163850' }}>
+                <h2 className="font-bold text-lg mb-4" style={{ color: 'var(--text-primary)' }}>
                   Offers on My Items ({notifications.offers.length})
                 </h2>
                 {notifications.offers.length === 0 ? (
                   <div className="text-center py-10 bg-white rounded-2xl">
                     <div className="text-4xl mb-3">🤝</div>
-                    <p className="text-sm" style={{ color: '#6b7280' }}>No offers received yet</p>
+                    <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>No offers received yet</p>
                   </div>
                 ) : (
                   <div className="space-y-3">
                     {notifications.offers.map((offer) => {
                       const statusColor = STATUS_COLORS[offer.status] ?? STATUS_COLORS.pending;
                       return (
-                        <div key={offer._id} className="bg-white rounded-xl p-4 shadow-sm flex items-start gap-3">
+                        <div key={offer._id} className="rounded-xl p-4 shadow-sm flex items-start gap-3">
                           {offer.listing?.images?.[0] && (
                             <img src={offer.listing.images[0]} alt="" className="w-14 h-14 rounded-lg object-cover flex-shrink-0" />
                           )}
                           <div className="flex-1 min-w-0">
-                            <p className="font-semibold text-sm truncate" style={{ color: '#163850' }}>
+                            <p className="font-semibold text-sm truncate" style={{ color: 'var(--text-primary)' }}>
                               {offer.listing?.title ?? 'Listing'}
                             </p>
                             <div className="flex items-center gap-2 mt-0.5">
                               <span className="text-xs px-2 py-0.5 rounded-full font-semibold" style={{ backgroundColor: statusColor.bg, color: statusColor.text }}>
                                 {offer.status}
                               </span>
-                              <span className="text-xs" style={{ color: '#6b7280' }}>from {offer.buyer.name}</span>
+                              <span className="text-xs" style={{ color: 'var(--text-secondary)' }}>from {offer.buyer.name}</span>
                               {offer.buyer.hostel && (
-                                <span className="text-xs" style={{ color: '#9ca3af' }}>· {offer.buyer.hostel}</span>
+                                <span className="text-xs" style={{ color: 'var(--text-muted)' }}>· {offer.buyer.hostel}</span>
                               )}
                             </div>
                             {offer.message && (
-                              <p className="text-xs mt-1 italic truncate" style={{ color: '#9ca3af' }}>"{offer.message}"</p>
+                              <p className="text-xs mt-1 italic truncate" style={{ color: 'var(--text-muted)' }}>"{offer.message}"</p>
                             )}
                           </div>
                           <div className="text-right flex-shrink-0">
                             <div className="font-bold text-sm" style={{ color: '#079BD8' }}>₹{offer.proposedPrice.toLocaleString()}</div>
-                            <div className="text-xs mt-0.5" style={{ color: '#9ca3af' }}>
+                            <div className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>
                               {new Date(offer.updatedAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}
                             </div>
                           </div>
@@ -469,27 +469,27 @@ export default function DashboardPage() {
 
               {/* Message notifications */}
               <div>
-                <h2 className="font-bold text-lg mb-4" style={{ color: '#163850' }}>
+                <h2 className="font-bold text-lg mb-4" style={{ color: 'var(--text-primary)' }}>
                   Recent Messages ({notifications.messages.length})
                 </h2>
                 {notifications.messages.length === 0 ? (
                   <div className="text-center py-10 bg-white rounded-2xl">
                     <div className="text-4xl mb-3">💬</div>
-                    <p className="text-sm" style={{ color: '#6b7280' }}>No messages yet</p>
+                    <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>No messages yet</p>
                   </div>
                 ) : (
                   <div className="space-y-3">
                     {notifications.messages.map((msg) => (
-                      <div key={msg._id} className="bg-white rounded-xl p-4 shadow-sm flex items-center gap-3">
+                      <div key={msg._id} className="rounded-xl p-4 shadow-sm flex items-center gap-3">
                         <div className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold text-white flex-shrink-0" style={{ backgroundColor: '#079BD8' }}>
                           {msg.sender.name?.[0]?.toUpperCase()}
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="font-semibold text-sm" style={{ color: '#163850' }}>{msg.sender.name}</p>
-                          <p className="text-sm truncate" style={{ color: '#6b7280' }}>{msg.content}</p>
+                          <p className="font-semibold text-sm" style={{ color: 'var(--text-primary)' }}>{msg.sender.name}</p>
+                          <p className="text-sm truncate" style={{ color: 'var(--text-secondary)' }}>{msg.content}</p>
                         </div>
                         <div className="text-right flex-shrink-0">
-                          <div className="text-xs" style={{ color: '#9ca3af' }}>
+                          <div className="text-xs" style={{ color: 'var(--text-muted)' }}>
                             {new Date(msg.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}
                           </div>
                           <a
@@ -511,28 +511,28 @@ export default function DashboardPage() {
           {/* EDIT PROFILE */}
           {tab === 'profile' && (
             <div className="max-w-xl">
-              <h2 className="font-bold text-lg mb-6" style={{ color: '#163850' }}>Edit Profile</h2>
+              <h2 className="font-bold text-lg mb-6" style={{ color: 'var(--text-primary)' }}>Edit Profile</h2>
 
               {/* Basic Info */}
-              <div className="bg-white rounded-2xl p-6 shadow-sm space-y-4 mb-4">
-                <h3 className="font-semibold text-sm uppercase tracking-wider" style={{ color: '#6b7280' }}>Basic Info</h3>
+              <div className="rounded-2xl p-6 shadow-sm space-y-4 mb-4">
+                <h3 className="font-semibold text-sm uppercase tracking-wider" style={{ color: 'var(--text-secondary)' }}>Basic Info</h3>
 
                 <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: '#6b7280' }}>Display Name</label>
+                  <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: 'var(--text-secondary)' }}>Display Name</label>
                   <input
                     type="text"
                     value={profileForm.name}
                     onChange={(e) => setProfileForm((p) => ({ ...p, name: e.target.value }))}
                     placeholder="Your name"
                     className="w-full px-4 py-2.5 rounded-lg border text-sm outline-none"
-                    style={{ borderColor: '#e2e8f0', color: '#163850' }}
+                    style={{ borderColor: 'var(--border)', color: 'var(--text-primary)' }}
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: '#6b7280' }}>Mobile Number</label>
+                  <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: 'var(--text-secondary)' }}>Mobile Number</label>
                   <div className="flex gap-2">
-                    <span className="flex items-center px-3 rounded-lg border text-sm" style={{ borderColor: '#e2e8f0', color: '#6b7280', backgroundColor: '#f8fafc' }}>+91</span>
+                    <span className="flex items-center px-3 rounded-lg border text-sm" style={{ borderColor: 'var(--border)', color: 'var(--text-secondary)', backgroundColor: 'var(--bg-page)' }}>+91</span>
                     <input
                       type="tel"
                       value={profileForm.phone}
@@ -540,14 +540,14 @@ export default function DashboardPage() {
                       placeholder="10-digit mobile"
                       maxLength={10}
                       className="flex-1 px-4 py-2.5 rounded-lg border text-sm outline-none"
-                      style={{ borderColor: '#e2e8f0', color: '#163850' }}
+                      style={{ borderColor: 'var(--border)', color: 'var(--text-primary)' }}
                     />
                   </div>
-                  <p className="text-xs mt-1" style={{ color: '#9ca3af' }}>Used by buyers to contact you directly (if enabled below)</p>
+                  <p className="text-xs mt-1" style={{ color: 'var(--text-muted)' }}>Used by buyers to contact you directly (if enabled below)</p>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: '#6b7280' }}>Bio</label>
+                  <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: 'var(--text-secondary)' }}>Bio</label>
                   <textarea
                     value={profileForm.bio}
                     onChange={(e) => setProfileForm((p) => ({ ...p, bio: e.target.value }))}
@@ -555,24 +555,24 @@ export default function DashboardPage() {
                     rows={3}
                     maxLength={300}
                     className="w-full px-4 py-2.5 rounded-lg border text-sm resize-none outline-none"
-                    style={{ borderColor: '#e2e8f0', color: '#163850' }}
+                    style={{ borderColor: 'var(--border)', color: 'var(--text-primary)' }}
                   />
-                  <span className="text-xs" style={{ color: '#9ca3af' }}>{profileForm.bio.length}/300</span>
+                  <span className="text-xs" style={{ color: 'var(--text-muted)' }}>{profileForm.bio.length}/300</span>
                 </div>
               </div>
 
               {/* Academic Info */}
-              <div className="bg-white rounded-2xl p-6 shadow-sm space-y-4 mb-4">
-                <h3 className="font-semibold text-sm uppercase tracking-wider" style={{ color: '#6b7280' }}>Academic Info</h3>
+              <div className="rounded-2xl p-6 shadow-sm space-y-4 mb-4">
+                <h3 className="font-semibold text-sm uppercase tracking-wider" style={{ color: 'var(--text-secondary)' }}>Academic Info</h3>
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: '#6b7280' }}>Program</label>
+                    <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: 'var(--text-secondary)' }}>Program</label>
                     <select
                       value={profileForm.program}
                       onChange={(e) => setProfileForm((p) => ({ ...p, program: e.target.value }))}
                       className="w-full px-3 py-2.5 rounded-lg border text-sm outline-none"
-                      style={{ borderColor: '#e2e8f0', color: profileForm.program ? '#163850' : '#9ca3af' }}
+                      style={{ borderColor: 'var(--border)', color: profileForm.program ? '#163850' : '#9ca3af' }}
                     >
                       <option value="">Select…</option>
                       {['BTech', 'MTech', 'MSc', 'MA', 'PhD', 'MBA', 'Other'].map((p) => (
@@ -582,12 +582,12 @@ export default function DashboardPage() {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: '#6b7280' }}>Graduation Year</label>
+                    <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: 'var(--text-secondary)' }}>Graduation Year</label>
                     <select
                       value={profileForm.graduationYear}
                       onChange={(e) => setProfileForm((p) => ({ ...p, graduationYear: e.target.value }))}
                       className="w-full px-3 py-2.5 rounded-lg border text-sm outline-none"
-                      style={{ borderColor: '#e2e8f0', color: profileForm.graduationYear ? '#163850' : '#9ca3af' }}
+                      style={{ borderColor: 'var(--border)', color: profileForm.graduationYear ? '#163850' : '#9ca3af' }}
                     >
                       <option value="">Year…</option>
                       {Array.from({ length: 12 }, (_, i) => 2024 + i).map((y) => (
@@ -598,30 +598,30 @@ export default function DashboardPage() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: '#6b7280' }}>Branch / Discipline</label>
+                  <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: 'var(--text-secondary)' }}>Branch / Discipline</label>
                   <input
                     type="text"
                     value={profileForm.branch}
                     onChange={(e) => setProfileForm((p) => ({ ...p, branch: e.target.value }))}
                     placeholder="e.g. Computer Science, Mechanical, Chemistry…"
                     className="w-full px-4 py-2.5 rounded-lg border text-sm outline-none"
-                    style={{ borderColor: '#e2e8f0', color: '#163850' }}
+                    style={{ borderColor: 'var(--border)', color: 'var(--text-primary)' }}
                   />
                 </div>
               </div>
 
               {/* Hostel Info */}
-              <div className="bg-white rounded-2xl p-6 shadow-sm space-y-4 mb-4">
-                <h3 className="font-semibold text-sm uppercase tracking-wider" style={{ color: '#6b7280' }}>Hostel Info</h3>
+              <div className="rounded-2xl p-6 shadow-sm space-y-4 mb-4">
+                <h3 className="font-semibold text-sm uppercase tracking-wider" style={{ color: 'var(--text-secondary)' }}>Hostel Info</h3>
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: '#6b7280' }}>Hostel</label>
+                    <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: 'var(--text-secondary)' }}>Hostel</label>
                     <select
                       value={profileForm.hostel}
                       onChange={(e) => setProfileForm((p) => ({ ...p, hostel: e.target.value }))}
                       className="w-full px-3 py-2.5 rounded-lg border text-sm outline-none"
-                      style={{ borderColor: '#e2e8f0', color: profileForm.hostel ? '#163850' : '#9ca3af' }}
+                      style={{ borderColor: 'var(--border)', color: profileForm.hostel ? '#163850' : '#9ca3af' }}
                     >
                       <option value="">Select…</option>
                       {['Aibaan','Beauki','Chimair','Duven','Emiet','Firpeal','Griwiksh','Hiqom','Ijokha','Jurqia','Lekhaag'].map((h) => (
@@ -631,22 +631,22 @@ export default function DashboardPage() {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: '#6b7280' }}>Wing / Room</label>
+                    <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: 'var(--text-secondary)' }}>Wing / Room</label>
                     <input
                       type="text"
                       value={profileForm.wing}
                       onChange={(e) => setProfileForm((p) => ({ ...p, wing: e.target.value }))}
                       placeholder="e.g. A-Wing, Room 204"
                       className="w-full px-4 py-2.5 rounded-lg border text-sm outline-none"
-                      style={{ borderColor: '#e2e8f0', color: '#163850' }}
+                      style={{ borderColor: 'var(--border)', color: 'var(--text-primary)' }}
                     />
                   </div>
                 </div>
               </div>
 
               {/* Contact Visibility */}
-              <div className="bg-white rounded-2xl p-6 shadow-sm space-y-4 mb-4">
-                <h3 className="font-semibold text-sm uppercase tracking-wider" style={{ color: '#6b7280' }}>Contact Visibility</h3>
+              <div className="rounded-2xl p-6 shadow-sm space-y-4 mb-4">
+                <h3 className="font-semibold text-sm uppercase tracking-wider" style={{ color: 'var(--text-secondary)' }}>Contact Visibility</h3>
 
                 {[
                   { key: 'showPhone', label: 'Show mobile to buyers', desc: 'Buyers can call/WhatsApp you from the listing page' },
@@ -654,8 +654,8 @@ export default function DashboardPage() {
                 ].map(({ key, label, desc }) => (
                   <div key={key} className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm font-medium" style={{ color: '#163850' }}>{label}</p>
-                      <p className="text-xs" style={{ color: '#9ca3af' }}>{desc}</p>
+                      <p className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>{label}</p>
+                      <p className="text-xs" style={{ color: 'var(--text-muted)' }}>{desc}</p>
                     </div>
                     <button
                       type="button"
@@ -670,12 +670,12 @@ export default function DashboardPage() {
               </div>
 
               {/* Push Notifications */}
-              <div className="bg-white rounded-2xl p-6 shadow-sm space-y-4 mb-4">
-                <h3 className="font-semibold text-sm uppercase tracking-wider" style={{ color: '#6b7280' }}>Notifications</h3>
+              <div className="rounded-2xl p-6 shadow-sm space-y-4 mb-4">
+                <h3 className="font-semibold text-sm uppercase tracking-wider" style={{ color: 'var(--text-secondary)' }}>Notifications</h3>
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium" style={{ color: '#163850' }}>Enable push notifications</p>
-                    <p className="text-xs mt-0.5" style={{ color: '#9ca3af' }}>Get notified when you receive a message or offer</p>
+                    <p className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>Enable push notifications</p>
+                    <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>Get notified when you receive a message or offer</p>
                   </div>
                   <button
                     type="button"
@@ -752,27 +752,27 @@ function OfferRow({
   const price = offer.finalPrice ?? offer.counterPrice ?? offer.proposedPrice;
 
   return (
-    <div className="bg-white rounded-xl p-4 shadow-sm flex flex-col sm:flex-row items-start sm:items-center gap-4">
+    <div className="rounded-xl p-4 shadow-sm flex flex-col sm:flex-row items-start sm:items-center gap-4">
       <div className="flex-1 min-w-0">
-        <p className="font-semibold text-sm truncate" style={{ color: '#163850' }}>
+        <p className="font-semibold text-sm truncate" style={{ color: 'var(--text-primary)' }}>
           {offer.listing?.title ?? 'Listing'}
         </p>
         <div className="flex items-center gap-2 mt-1">
           <span className="badge text-xs" style={{ backgroundColor: statusColor.bg, color: statusColor.text }}>
             {offer.status}
           </span>
-          <span className="text-xs" style={{ color: '#6b7280' }}>
+          <span className="text-xs" style={{ color: 'var(--text-secondary)' }}>
             {perspective === 'buyer' ? `to ${offer.seller.name}` : `from ${offer.buyer.name} · ${offer.buyer.hostel}`}
           </span>
         </div>
         {offer.message && (
-          <p className="text-xs mt-1 italic truncate" style={{ color: '#9ca3af' }}>"{offer.message}"</p>
+          <p className="text-xs mt-1 italic truncate" style={{ color: 'var(--text-muted)' }}>"{offer.message}"</p>
         )}
       </div>
 
       <div className="text-right flex-shrink-0">
         <div className="font-bold" style={{ color: '#079BD8' }}>₹{price.toLocaleString()}</div>
-        <div className="text-xs" style={{ color: '#9ca3af' }}>
+        <div className="text-xs" style={{ color: 'var(--text-muted)' }}>
           {new Date(offer.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}
         </div>
       </div>

@@ -35,8 +35,8 @@ export default function CategoryGrid() {
     <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
       <div className="flex items-end justify-between mb-8">
         <div>
-          <h2 className="text-2xl font-bold" style={{ color: '#163850' }}>Browse by Category</h2>
-          <p className="text-sm mt-1" style={{ color: '#6b7280' }}>Find exactly what you need</p>
+          <h2 className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>Browse by Category</h2>
+          <p className="text-sm mt-1" style={{ color: 'var(--text-secondary)' }}>Find exactly what you need</p>
         </div>
         <Link href="/listings" className="text-sm font-semibold hidden sm:block" style={{ color: '#079BD8' }}>
           View all →

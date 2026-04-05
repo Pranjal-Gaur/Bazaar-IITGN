@@ -120,47 +120,47 @@ export default function EditListingPage() {
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar />
-      <main className="flex-1" style={{ backgroundColor: '#f8fafc' }}>
+      <main className="flex-1" style={{ backgroundColor: 'var(--bg-page)' }}>
         <div className="max-w-2xl mx-auto px-4 sm:px-6 py-10">
-          <h1 className="text-2xl font-bold mb-1" style={{ color: '#163850' }}>Edit Listing</h1>
-          <p className="text-sm mb-8" style={{ color: '#6b7280' }}>Update your listing details below.</p>
+          <h1 className="text-2xl font-bold mb-1" style={{ color: 'var(--text-primary)' }}>Edit Listing</h1>
+          <p className="text-sm mb-8" style={{ color: 'var(--text-secondary)' }}>Update your listing details below.</p>
 
           {errors.form && (
             <div className="mb-6 p-3 rounded-lg text-sm" style={{ backgroundColor: '#fee2e2', color: '#b91c1c' }}>{errors.form}</div>
           )}
 
           <form onSubmit={submit} className="space-y-6">
-            <div className="bg-white rounded-2xl p-5 shadow-sm">
-              <label className="block font-semibold mb-3" style={{ color: '#163850' }}>Photos</label>
+            <div className="rounded-2xl p-5 shadow-sm">
+              <label className="block font-semibold mb-3" style={{ color: 'var(--text-primary)' }}>Photos</label>
               <ImageUpload images={images} onChange={setImages} maxImages={5} />
             </div>
 
-            <div className="bg-white rounded-2xl p-5 shadow-sm space-y-4">
-              <h3 className="font-semibold" style={{ color: '#163850' }}>Item Details</h3>
+            <div className="rounded-2xl p-5 shadow-sm space-y-4">
+              <h3 className="font-semibold" style={{ color: 'var(--text-primary)' }}>Item Details</h3>
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: '#6b7280' }}>Title *</label>
+                <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: 'var(--text-secondary)' }}>Title *</label>
                 <input type="text" value={form.title} onChange={(e) => set('title', e.target.value)} maxLength={120}
                   className="w-full px-4 py-2.5 rounded-lg border outline-none text-sm"
-                  style={{ borderColor: errors.title ? '#dc2626' : '#e2e8f0', color: '#163850' }} />
+                  style={{ borderColor: errors.title ? '#dc2626' : '#e2e8f0', color: 'var(--text-primary)' }} />
                 {errors.title && <p className="text-xs mt-1" style={{ color: '#dc2626' }}>{errors.title}</p>}
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: '#6b7280' }}>Category *</label>
+                  <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: 'var(--text-secondary)' }}>Category *</label>
                   <select value={form.category} onChange={(e) => set('category', e.target.value)}
                     className="w-full px-3 py-2.5 rounded-lg border text-sm outline-none"
-                    style={{ borderColor: errors.category ? '#dc2626' : '#e2e8f0', color: '#163850' }}>
+                    style={{ borderColor: errors.category ? '#dc2626' : '#e2e8f0', color: 'var(--text-primary)' }}>
                     <option value="">Select…</option>
                     {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
                   </select>
                   {errors.category && <p className="text-xs mt-1" style={{ color: '#dc2626' }}>{errors.category}</p>}
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: '#6b7280' }}>Condition *</label>
+                  <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: 'var(--text-secondary)' }}>Condition *</label>
                   <select value={form.condition} onChange={(e) => set('condition', e.target.value)}
                     className="w-full px-3 py-2.5 rounded-lg border text-sm outline-none"
-                    style={{ borderColor: errors.condition ? '#dc2626' : '#e2e8f0', color: '#163850' }}>
+                    style={{ borderColor: errors.condition ? '#dc2626' : '#e2e8f0', color: 'var(--text-primary)' }}>
                     <option value="">Select…</option>
                     {CONDITIONS.map((c) => <option key={c} value={c}>{c}</option>)}
                   </select>
@@ -169,35 +169,35 @@ export default function EditListingPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: '#6b7280' }}>Description *</label>
+                <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: 'var(--text-secondary)' }}>Description *</label>
                 <textarea value={form.description} onChange={(e) => set('description', e.target.value)}
                   rows={4} maxLength={2000} className="w-full px-4 py-2.5 rounded-lg border resize-none outline-none text-sm"
-                  style={{ borderColor: errors.description ? '#dc2626' : '#e2e8f0', color: '#163850' }} />
+                  style={{ borderColor: errors.description ? '#dc2626' : '#e2e8f0', color: 'var(--text-primary)' }} />
                 {errors.description && <p className="text-xs" style={{ color: '#dc2626' }}>{errors.description}</p>}
               </div>
             </div>
 
-            <div className="bg-white rounded-2xl p-5 shadow-sm space-y-4">
-              <h3 className="font-semibold" style={{ color: '#163850' }}>Pricing</h3>
+            <div className="rounded-2xl p-5 shadow-sm space-y-4">
+              <h3 className="font-semibold" style={{ color: 'var(--text-primary)' }}>Pricing</h3>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: '#6b7280' }}>Asking Price (₹) *</label>
+                  <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: 'var(--text-secondary)' }}>Asking Price (₹) *</label>
                   <input type="number" value={form.price} onChange={(e) => set('price', e.target.value)} min={0}
                     className="w-full px-4 py-2.5 rounded-lg border text-sm outline-none font-bold"
-                    style={{ borderColor: errors.price ? '#dc2626' : '#e2e8f0', color: '#163850' }} />
+                    style={{ borderColor: errors.price ? '#dc2626' : '#e2e8f0', color: 'var(--text-primary)' }} />
                   {errors.price && <p className="text-xs mt-1" style={{ color: '#dc2626' }}>{errors.price}</p>}
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: '#6b7280' }}>Original Price (₹)</label>
+                  <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: 'var(--text-secondary)' }}>Original Price (₹)</label>
                   <input type="number" value={form.originalPrice} onChange={(e) => set('originalPrice', e.target.value)} min={0}
                     className="w-full px-4 py-2.5 rounded-lg border text-sm outline-none"
-                    style={{ borderColor: '#e2e8f0', color: '#163850' }} />
+                    style={{ borderColor: 'var(--border)', color: 'var(--text-primary)' }} />
                 </div>
               </div>
               <div className="flex items-center justify-between p-3 rounded-xl" style={{ backgroundColor: '#fff8f0' }}>
                 <div>
-                  <div className="font-semibold text-sm" style={{ color: '#163850' }}>🔥 Urgent Sale</div>
-                  <div className="text-xs mt-0.5" style={{ color: '#9ca3af' }}>Gets priority placement</div>
+                  <div className="font-semibold text-sm" style={{ color: 'var(--text-primary)' }}>🔥 Urgent Sale</div>
+                  <div className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>Gets priority placement</div>
                 </div>
                 <button type="button" onClick={() => set('isUrgent', !form.isUrgent)}
                   className="relative w-11 h-6 rounded-full transition-colors"
@@ -207,50 +207,50 @@ export default function EditListingPage() {
               </div>
             </div>
 
-            <div className="bg-white rounded-2xl p-5 shadow-sm space-y-4">
-              <h3 className="font-semibold" style={{ color: '#163850' }}>Location</h3>
+            <div className="rounded-2xl p-5 shadow-sm space-y-4">
+              <h3 className="font-semibold" style={{ color: 'var(--text-primary)' }}>Location</h3>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: '#6b7280' }}>Hostel *</label>
+                  <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: 'var(--text-secondary)' }}>Hostel *</label>
                   <select value={form.hostel} onChange={(e) => set('hostel', e.target.value)}
                     className="w-full px-3 py-2.5 rounded-lg border text-sm outline-none"
-                    style={{ borderColor: errors.hostel ? '#dc2626' : '#e2e8f0', color: '#163850' }}>
+                    style={{ borderColor: errors.hostel ? '#dc2626' : '#e2e8f0', color: 'var(--text-primary)' }}>
                     <option value="">Select hostel…</option>
                     {HOSTELS.map((h) => <option key={h} value={h}>{h}</option>)}
                   </select>
                   {errors.hostel && <p className="text-xs mt-1" style={{ color: '#dc2626' }}>{errors.hostel}</p>}
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: '#6b7280' }}>Wing</label>
+                  <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: 'var(--text-secondary)' }}>Wing</label>
                   <input type="text" value={form.wing} onChange={(e) => set('wing', e.target.value)} placeholder="e.g. A-Wing"
                     className="w-full px-4 py-2.5 rounded-lg border text-sm outline-none"
-                    style={{ borderColor: '#e2e8f0', color: '#163850' }} />
+                    style={{ borderColor: 'var(--border)', color: 'var(--text-primary)' }} />
                 </div>
               </div>
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: '#6b7280' }}>Preferred Pickup Spot</label>
+                <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: 'var(--text-secondary)' }}>Preferred Pickup Spot</label>
                 <select value={form.preferredPickup} onChange={(e) => set('preferredPickup', e.target.value)}
                   className="w-full px-3 py-2.5 rounded-lg border text-sm outline-none"
-                  style={{ borderColor: '#e2e8f0', color: '#163850' }}>
+                  style={{ borderColor: 'var(--border)', color: 'var(--text-primary)' }}>
                   <option value="">Select spot…</option>
                   {PICKUP_SPOTS.map((s) => <option key={s} value={s}>{s}</option>)}
                 </select>
               </div>
             </div>
 
-            <div className="bg-white rounded-2xl p-5 shadow-sm">
-              <label className="block font-semibold mb-1" style={{ color: '#163850' }}>Tags</label>
-              <p className="text-xs mb-3" style={{ color: '#9ca3af' }}>Comma-separated keywords</p>
+            <div className="rounded-2xl p-5 shadow-sm">
+              <label className="block font-semibold mb-1" style={{ color: 'var(--text-primary)' }}>Tags</label>
+              <p className="text-xs mb-3" style={{ color: 'var(--text-muted)' }}>Comma-separated keywords</p>
               <input type="text" value={form.tags} onChange={(e) => set('tags', e.target.value)}
                 placeholder="e.g. laptop, dell, 8gb"
                 className="w-full px-4 py-2.5 rounded-lg border text-sm outline-none"
-                style={{ borderColor: '#e2e8f0', color: '#163850' }} />
+                style={{ borderColor: 'var(--border)', color: 'var(--text-primary)' }} />
             </div>
 
             <div className="flex gap-3">
               <button type="button" onClick={() => router.push(`/listings/${id}`)}
                 className="flex-1 py-3 rounded-xl font-semibold border text-sm"
-                style={{ borderColor: '#e2e8f0', color: '#6b7280' }}>
+                style={{ borderColor: 'var(--border)', color: 'var(--text-secondary)' }}>
                 Cancel
               </button>
               <button type="submit" disabled={saving} className="btn-primary px-8 py-3 text-base w-full justify-center">

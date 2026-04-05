@@ -41,7 +41,7 @@ export default function ListingCard({ listing }: Props) {
 
   return (
     <Link href={`/listings/${listing._id}`} className="block">
-      <div className="bg-white rounded-xl overflow-hidden card-hover border border-gray-100 h-full flex flex-col">
+      <div className="rounded-xl overflow-hidden card-hover border h-full flex flex-col" style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border)' }}>
         {/* Image */}
         <div className="relative bg-gray-100 h-44 overflow-hidden">
           {listing.images && listing.images[0] ? (
@@ -93,7 +93,7 @@ export default function ListingCard({ listing }: Props) {
           </div>
 
           {/* Title */}
-          <h3 className="font-semibold text-sm leading-snug line-clamp-2" style={{ color: '#1a2e3d' }}>
+          <h3 className="font-semibold text-sm leading-snug line-clamp-2" style={{ color: 'var(--text-primary)' }}>
             {listing.title}
           </h3>
 
@@ -110,7 +110,7 @@ export default function ListingCard({ listing }: Props) {
           </div>
 
           {/* Footer info */}
-          <div className="flex items-center justify-between text-xs pt-2 border-t border-gray-50" style={{ color: '#6b7280' }}>
+          <div className="flex items-center justify-between text-xs pt-2 border-t" style={{ borderColor: 'var(--border)', color: 'var(--text-secondary)' }}>
             <div className="flex items-center gap-1">
               <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />

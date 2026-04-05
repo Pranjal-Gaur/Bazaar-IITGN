@@ -99,10 +99,10 @@ export default function NewListingPage() {
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar />
-      <main className="flex-1" style={{ backgroundColor: '#f8fafc' }}>
+      <main className="flex-1" style={{ backgroundColor: 'var(--bg-page)' }}>
         <div className="max-w-2xl mx-auto px-4 sm:px-6 py-10">
-          <h1 className="text-2xl font-bold mb-1" style={{ color: '#163850' }}>Post an Item</h1>
-          <p className="text-sm mb-8" style={{ color: '#6b7280' }}>Fill in the details below — good photos and descriptions sell faster!</p>
+          <h1 className="text-2xl font-bold mb-1" style={{ color: 'var(--text-primary)' }}>Post an Item</h1>
+          <p className="text-sm mb-8" style={{ color: 'var(--text-secondary)' }}>Fill in the details below — good photos and descriptions sell faster!</p>
 
           {errors.form && (
             <div className="mb-6 p-3 rounded-lg text-sm" style={{ backgroundColor: '#fee2e2', color: '#b91c1c' }}>{errors.form}</div>
@@ -110,17 +110,17 @@ export default function NewListingPage() {
 
           <form onSubmit={submit} className="space-y-6">
             {/* Photos */}
-            <div className="bg-white rounded-2xl p-5 shadow-sm">
-              <label className="block font-semibold mb-3" style={{ color: '#163850' }}>Photos</label>
+            <div className="rounded-2xl p-5 shadow-sm">
+              <label className="block font-semibold mb-3" style={{ color: 'var(--text-primary)' }}>Photos</label>
               <ImageUpload images={images} onChange={setImages} maxImages={5} />
             </div>
 
             {/* Basic info */}
-            <div className="bg-white rounded-2xl p-5 shadow-sm space-y-4">
-              <h3 className="font-semibold" style={{ color: '#163850' }}>Item Details</h3>
+            <div className="rounded-2xl p-5 shadow-sm space-y-4">
+              <h3 className="font-semibold" style={{ color: 'var(--text-primary)' }}>Item Details</h3>
 
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: '#6b7280' }}>Title *</label>
+                <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: 'var(--text-secondary)' }}>Title *</label>
                 <input
                   type="text"
                   value={form.title}
@@ -128,14 +128,14 @@ export default function NewListingPage() {
                   placeholder="e.g. Dell Inspiron Laptop, 8GB RAM"
                   maxLength={120}
                   className="w-full px-4 py-2.5 rounded-lg border outline-none focus:ring-2 text-sm"
-                  style={{ borderColor: errors.title ? '#dc2626' : '#e2e8f0', color: '#163850' }}
+                  style={{ borderColor: errors.title ? '#dc2626' : '#e2e8f0', color: 'var(--text-primary)' }}
                 />
                 {errors.title && <p className="text-xs mt-1" style={{ color: '#dc2626' }}>{errors.title}</p>}
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: '#6b7280' }}>Category *</label>
+                  <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: 'var(--text-secondary)' }}>Category *</label>
                   <select
                     value={form.category}
                     onChange={(e) => set('category', e.target.value)}
@@ -149,7 +149,7 @@ export default function NewListingPage() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: '#6b7280' }}>Condition *</label>
+                  <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: 'var(--text-secondary)' }}>Condition *</label>
                   <select
                     value={form.condition}
                     onChange={(e) => set('condition', e.target.value)}
@@ -164,7 +164,7 @@ export default function NewListingPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: '#6b7280' }}>Description *</label>
+                <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: 'var(--text-secondary)' }}>Description *</label>
                 <textarea
                   value={form.description}
                   onChange={(e) => set('description', e.target.value)}
@@ -172,21 +172,21 @@ export default function NewListingPage() {
                   rows={4}
                   maxLength={2000}
                   className="w-full px-4 py-2.5 rounded-lg border resize-none outline-none text-sm"
-                  style={{ borderColor: errors.description ? '#dc2626' : '#e2e8f0', color: '#163850' }}
+                  style={{ borderColor: errors.description ? '#dc2626' : '#e2e8f0', color: 'var(--text-primary)' }}
                 />
                 <div className="flex justify-between mt-0.5">
                   {errors.description && <p className="text-xs" style={{ color: '#dc2626' }}>{errors.description}</p>}
-                  <span className="text-xs ml-auto" style={{ color: '#9ca3af' }}>{form.description.length}/2000</span>
+                  <span className="text-xs ml-auto" style={{ color: 'var(--text-muted)' }}>{form.description.length}/2000</span>
                 </div>
               </div>
             </div>
 
             {/* Pricing */}
-            <div className="bg-white rounded-2xl p-5 shadow-sm space-y-4">
-              <h3 className="font-semibold" style={{ color: '#163850' }}>Pricing</h3>
+            <div className="rounded-2xl p-5 shadow-sm space-y-4">
+              <h3 className="font-semibold" style={{ color: 'var(--text-primary)' }}>Pricing</h3>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: '#6b7280' }}>Asking Price (₹) *</label>
+                  <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: 'var(--text-secondary)' }}>Asking Price (₹) *</label>
                   <input
                     type="number"
                     value={form.price}
@@ -194,12 +194,12 @@ export default function NewListingPage() {
                     placeholder="0"
                     min={0}
                     className="w-full px-4 py-2.5 rounded-lg border text-sm outline-none font-bold"
-                    style={{ borderColor: errors.price ? '#dc2626' : '#e2e8f0', color: '#163850' }}
+                    style={{ borderColor: errors.price ? '#dc2626' : '#e2e8f0', color: 'var(--text-primary)' }}
                   />
                   {errors.price && <p className="text-xs mt-1" style={{ color: '#dc2626' }}>{errors.price}</p>}
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: '#6b7280' }}>Original Price (₹)</label>
+                  <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: 'var(--text-secondary)' }}>Original Price (₹)</label>
                   <input
                     type="number"
                     value={form.originalPrice}
@@ -207,7 +207,7 @@ export default function NewListingPage() {
                     placeholder="Optional MRP"
                     min={0}
                     className="w-full px-4 py-2.5 rounded-lg border text-sm outline-none"
-                    style={{ borderColor: '#e2e8f0', color: '#163850' }}
+                    style={{ borderColor: 'var(--border)', color: 'var(--text-primary)' }}
                   />
                 </div>
               </div>
@@ -215,8 +215,8 @@ export default function NewListingPage() {
               {/* Urgent toggle */}
               <div className="flex items-center justify-between p-3 rounded-xl" style={{ backgroundColor: '#fff8f0' }}>
                 <div>
-                  <div className="font-semibold text-sm" style={{ color: '#163850' }}>🔥 Urgent Sale</div>
-                  <div className="text-xs mt-0.5" style={{ color: '#9ca3af' }}>Graduating? Gets priority placement + badge</div>
+                  <div className="font-semibold text-sm" style={{ color: 'var(--text-primary)' }}>🔥 Urgent Sale</div>
+                  <div className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>Graduating? Gets priority placement + badge</div>
                 </div>
                 <button
                   type="button"
@@ -230,11 +230,11 @@ export default function NewListingPage() {
             </div>
 
             {/* Location */}
-            <div className="bg-white rounded-2xl p-5 shadow-sm space-y-4">
-              <h3 className="font-semibold" style={{ color: '#163850' }}>Location</h3>
+            <div className="rounded-2xl p-5 shadow-sm space-y-4">
+              <h3 className="font-semibold" style={{ color: 'var(--text-primary)' }}>Location</h3>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: '#6b7280' }}>Hostel *</label>
+                  <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: 'var(--text-secondary)' }}>Hostel *</label>
                   <select
                     value={form.hostel}
                     onChange={(e) => set('hostel', e.target.value)}
@@ -247,25 +247,25 @@ export default function NewListingPage() {
                   {errors.hostel && <p className="text-xs mt-1" style={{ color: '#dc2626' }}>{errors.hostel}</p>}
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: '#6b7280' }}>Wing (optional)</label>
+                  <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: 'var(--text-secondary)' }}>Wing (optional)</label>
                   <input
                     type="text"
                     value={form.wing}
                     onChange={(e) => set('wing', e.target.value)}
                     placeholder="e.g. A-Wing"
                     className="w-full px-4 py-2.5 rounded-lg border text-sm outline-none"
-                    style={{ borderColor: '#e2e8f0', color: '#163850' }}
+                    style={{ borderColor: 'var(--border)', color: 'var(--text-primary)' }}
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: '#6b7280' }}>Preferred Pickup Spot</label>
+                <label className="block text-xs font-semibold uppercase tracking-wider mb-1.5" style={{ color: 'var(--text-secondary)' }}>Preferred Pickup Spot</label>
                 <select
                   value={form.preferredPickup}
                   onChange={(e) => set('preferredPickup', e.target.value)}
                   className="w-full px-3 py-2.5 rounded-lg border text-sm outline-none"
-                  style={{ borderColor: '#e2e8f0', color: form.preferredPickup ? '#163850' : '#9ca3af' }}
+                  style={{ borderColor: 'var(--border)', color: form.preferredPickup ? '#163850' : '#9ca3af' }}
                 >
                   <option value="">Select spot…</option>
                   {PICKUP_SPOTS.map((s) => <option key={s} value={s}>{s}</option>)}
@@ -274,16 +274,16 @@ export default function NewListingPage() {
             </div>
 
             {/* Tags */}
-            <div className="bg-white rounded-2xl p-5 shadow-sm">
-              <label className="block font-semibold mb-1" style={{ color: '#163850' }}>Tags</label>
-              <p className="text-xs mb-3" style={{ color: '#9ca3af' }}>Comma-separated keywords to help people find this item</p>
+            <div className="rounded-2xl p-5 shadow-sm">
+              <label className="block font-semibold mb-1" style={{ color: 'var(--text-primary)' }}>Tags</label>
+              <p className="text-xs mb-3" style={{ color: 'var(--text-muted)' }}>Comma-separated keywords to help people find this item</p>
               <input
                 type="text"
                 value={form.tags}
                 onChange={(e) => set('tags', e.target.value)}
                 placeholder="e.g. laptop, dell, 8gb, portable"
                 className="w-full px-4 py-2.5 rounded-lg border text-sm outline-none"
-                style={{ borderColor: '#e2e8f0', color: '#163850' }}
+                style={{ borderColor: 'var(--border)', color: 'var(--text-primary)' }}
               />
             </div>
 
@@ -293,7 +293,7 @@ export default function NewListingPage() {
                 type="button"
                 onClick={() => router.back()}
                 className="flex-1 py-3 rounded-xl font-semibold border text-sm"
-                style={{ borderColor: '#e2e8f0', color: '#6b7280' }}
+                style={{ borderColor: 'var(--border)', color: 'var(--text-secondary)' }}
               >
                 Cancel
               </button>

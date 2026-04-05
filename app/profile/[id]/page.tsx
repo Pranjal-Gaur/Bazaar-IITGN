@@ -52,8 +52,8 @@ function StarRating({ rating, count }: { rating: number; count: number }) {
       {[1, 2, 3, 4, 5].map((s) => (
         <span key={s} style={{ color: s <= Math.round(rating) ? '#f59e0b' : '#e5e7eb', fontSize: '16px' }}>★</span>
       ))}
-      <span className="text-sm font-semibold ml-1" style={{ color: '#163850' }}>{rating.toFixed(1)}</span>
-      <span className="text-xs" style={{ color: '#9ca3af' }}>({count} reviews)</span>
+      <span className="text-sm font-semibold ml-1" style={{ color: 'var(--text-primary)' }}>{rating.toFixed(1)}</span>
+      <span className="text-xs" style={{ color: 'var(--text-muted)' }}>({count} reviews)</span>
     </div>
   );
 }
@@ -116,7 +116,7 @@ export default function ProfilePage() {
     return (
       <div className="min-h-screen flex items-center justify-center flex-col gap-4">
         <div className="text-5xl">🔍</div>
-        <p className="font-bold" style={{ color: '#163850' }}>User not found</p>
+        <p className="font-bold" style={{ color: 'var(--text-primary)' }}>User not found</p>
       </div>
     );
   }
@@ -126,7 +126,7 @@ export default function ProfilePage() {
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar />
-      <main className="flex-1" style={{ backgroundColor: '#f8fafc' }}>
+      <main className="flex-1" style={{ backgroundColor: 'var(--bg-page)' }}>
         {/* Profile header */}
         <div style={{ background: 'linear-gradient(135deg, #163850, #045F82)' }}>
           <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -188,7 +188,7 @@ export default function ProfilePage() {
         {/* Listings */}
         {listings.length > 0 && (
           <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-            <h2 className="text-xl font-bold mb-5" style={{ color: '#163850' }}>Active Listings</h2>
+            <h2 className="text-xl font-bold mb-5" style={{ color: 'var(--text-primary)' }}>Active Listings</h2>
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
               {listings.map((l) => <ListingCard key={l._id} listing={l} />)}
             </div>
@@ -198,18 +198,18 @@ export default function ProfilePage() {
         {/* Reviews */}
         {reviews.length > 0 && (
           <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
-            <h2 className="text-xl font-bold mb-5" style={{ color: '#163850' }}>Reviews</h2>
+            <h2 className="text-xl font-bold mb-5" style={{ color: 'var(--text-primary)' }}>Reviews</h2>
             <div className="space-y-3">
               {reviews.map((r) => (
-                <div key={r._id} className="bg-white rounded-xl p-4 shadow-sm">
+                <div key={r._id} className="rounded-xl p-4 shadow-sm">
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2">
                       <div className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold text-white" style={{ backgroundColor: '#163850' }}>
                         {r.reviewer.name?.[0]?.toUpperCase()}
                       </div>
                       <div>
-                        <span className="text-sm font-semibold" style={{ color: '#163850' }}>{r.reviewer.name}</span>
-                        <span className="text-xs ml-2" style={{ color: '#9ca3af' }}>{r.role === 'buyer' ? 'Buyer' : 'Seller'}</span>
+                        <span className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>{r.reviewer.name}</span>
+                        <span className="text-xs ml-2" style={{ color: 'var(--text-muted)' }}>{r.role === 'buyer' ? 'Buyer' : 'Seller'}</span>
                       </div>
                     </div>
                     <div className="flex items-center gap-1">
@@ -218,8 +218,8 @@ export default function ProfilePage() {
                       ))}
                     </div>
                   </div>
-                  {r.comment && <p className="text-sm" style={{ color: '#4b5563' }}>{r.comment}</p>}
-                  <p className="text-xs mt-2" style={{ color: '#9ca3af' }}>
+                  {r.comment && <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>{r.comment}</p>}
+                  <p className="text-xs mt-2" style={{ color: 'var(--text-muted)' }}>
                     {new Date(r.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
                   </p>
                 </div>

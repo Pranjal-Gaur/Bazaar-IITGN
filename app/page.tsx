@@ -32,7 +32,7 @@ export default function Home() {
 
         {/* Urgent Listings */}
         {urgentListings.length > 0 && (
-          <section className="py-10" style={{ backgroundColor: '#fff8f0' }}>
+          <section className="py-10" style={{ backgroundColor: 'var(--bg-page)' }}>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-2">
@@ -56,12 +56,12 @@ export default function Home() {
         )}
 
         {/* Recent Listings */}
-        <section className="py-12 bg-white">
+        <section className="py-12" style={{ backgroundColor: 'var(--bg-card)' }}>
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex items-end justify-between mb-6">
               <div>
-                <h2 className="text-2xl font-bold" style={{ color: '#163850' }}>Recent Listings</h2>
-                <p className="text-sm mt-1" style={{ color: '#6b7280' }}>Freshly posted by your campus peers</p>
+                <h2 className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>Recent Listings</h2>
+                <p className="text-sm mt-1" style={{ color: 'var(--text-secondary)' }}>Freshly posted by your campus peers</p>
               </div>
               <Link href="/listings" className="text-sm font-semibold hidden sm:block" style={{ color: '#079BD8' }}>
                 View all listings →
@@ -71,8 +71,8 @@ export default function Home() {
             {recentListings.length === 0 ? (
               <div className="text-center py-16">
                 <div className="text-5xl mb-4">🛍️</div>
-                <p className="font-semibold" style={{ color: '#163850' }}>No listings yet</p>
-                <p className="text-sm mt-1 mb-6" style={{ color: '#6b7280' }}>Be the first to post something!</p>
+                <p className="font-semibold" style={{ color: 'var(--text-primary)' }}>No listings yet</p>
+                <p className="text-sm mt-1 mb-6" style={{ color: 'var(--text-secondary)' }}>Be the first to post something!</p>
                 <Link href="/listings/new" className="btn-primary">Post an Item</Link>
               </div>
             ) : (
@@ -118,9 +118,9 @@ export default function Home() {
         </section>
 
         {/* How it works */}
-        <section className="py-14 bg-white">
+        <section className="py-14" style={{ backgroundColor: 'var(--bg-card)' }}>
           <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 className="text-2xl font-bold text-center mb-10" style={{ color: '#163850' }}>How Bazaar Works</h2>
+            <h2 className="text-2xl font-bold text-center mb-10" style={{ color: 'var(--text-primary)' }}>How Bazaar Works</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {[
                 { step: '1', icon: '🔐', title: 'Sign In Securely', desc: 'Login with your @iitgn.ac.in Google account. Verified students only.' },
@@ -132,8 +132,8 @@ export default function Home() {
                     {icon}
                   </div>
                   <div className="text-xs font-bold uppercase tracking-widest mb-2" style={{ color: '#079BD8' }}>Step {step}</div>
-                  <h3 className="font-bold mb-2" style={{ color: '#163850' }}>{title}</h3>
-                  <p className="text-sm leading-relaxed" style={{ color: '#6b7280' }}>{desc}</p>
+                  <h3 className="font-bold mb-2" style={{ color: 'var(--text-primary)' }}>{title}</h3>
+                  <p className="text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}>{desc}</p>
                 </div>
               ))}
             </div>

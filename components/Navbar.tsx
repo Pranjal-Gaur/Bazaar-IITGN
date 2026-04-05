@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { useSession, signIn, signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import { useTheme } from '@/hooks/useTheme';
 
 export default function Navbar() {
   const { data: session } = useSession();
@@ -11,6 +12,7 @@ export default function Navbar() {
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [search, setSearch] = useState('');
   const router = useRouter();
+  const { dark, toggle } = useTheme();
 
   function handleSearch(e: React.FormEvent) {
     e.preventDefault();
@@ -61,6 +63,24 @@ export default function Navbar() {
               Browse
             </Link>
 
+            {/* Dark mode toggle */}
+            <button
+              onClick={toggle}
+              title={dark ? 'Switch to light mode' : 'Switch to dark mode'}
+              className="w-8 h-8 flex items-center justify-center rounded-lg transition-colors"
+              style={{ backgroundColor: 'rgba(255,255,255,0.1)', color: '#B3EAF9' }}
+            >
+              {dark ? (
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M17.657 17.657l-.707-.707M6.343 6.343l-.707-.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+              ) : (
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                </svg>
+              )}
+            </button>
+
             {session ? (
               <>
                 <Link href="/listings/new" className="btn-primary text-sm">
@@ -92,9 +112,9 @@ export default function Navbar() {
                   {userMenuOpen && (
                     <>
                       <div className="fixed inset-0 z-10" onClick={() => setUserMenuOpen(false)} />
-                      <div className="absolute right-0 mt-2 w-52 bg-white rounded-xl shadow-xl z-20 overflow-hidden">
-                        <div className="px-4 py-3 border-b">
-                          <p className="font-semibold text-sm truncate" style={{ color: '#163850' }}>{session.user?.name}</p>
+                      <div className="absolute right-0 mt-2 w-52 rounded-xl shadow-xl z-20 overflow-hidden" style={{ backgroundColor: 'var(--bg-card)' }}>
+                        <div className="px-4 py-3 border-b" style={{ borderColor: 'var(--border)' }}>
+                          <p className="font-semibold text-sm truncate" style={{ color: 'var(--text-primary)' }}>{session.user?.name}</p>
                           <div className="flex items-center gap-1 mt-0.5">
                             <span className="text-xs" style={{ color: '#9ca3af' }}>⭐ {session.user?.karmaScore ?? 10} Karma</span>
                           </div>
@@ -111,12 +131,12 @@ export default function Navbar() {
                             href={href}
                             onClick={() => setUserMenuOpen(false)}
                             className="flex items-center gap-2 px-4 py-2.5 text-sm transition-colors hover:bg-gray-50"
-                            style={{ color: '#163850' }}
+                            style={{ color: 'var(--text-primary)' }}
                           >
                             <span>{icon}</span> {label}
                           </Link>
                         ))}
-                        <div className="border-t">
+                        <div className="border-t" style={{ borderColor: 'var(--border)' }}>
                           <button
                             onClick={() => signOut({ callbackUrl: '/' })}
                             className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-left transition-colors hover:bg-red-50"
@@ -174,6 +194,13 @@ export default function Navbar() {
             />
           </form>
           <Link href="/listings" className="block text-sm font-medium py-2" style={{ color: '#B3EAF9' }} onClick={() => setMenuOpen(false)}>Browse Listings</Link>
+          <button
+            onClick={toggle}
+            className="flex items-center gap-2 text-sm font-medium py-2 w-full text-left"
+            style={{ color: '#B3EAF9' }}
+          >
+            {dark ? '☀️ Light Mode' : '🌙 Dark Mode'}
+          </button>
           <Link href="/listings/new" className="block btn-primary text-sm w-full text-center justify-center" onClick={() => setMenuOpen(false)}>Post an Item</Link>
 
           {session ? (

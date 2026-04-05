@@ -123,17 +123,17 @@ export default function ListingDetailPage() {
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar />
-      <main className="flex-1" style={{ backgroundColor: '#f8fafc' }}>
+      <main className="flex-1" style={{ backgroundColor: 'var(--bg-page)' }}>
         {/* Breadcrumb */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center gap-2 text-sm" style={{ color: '#6b7280' }}>
+          <div className="flex items-center gap-2 text-sm" style={{ color: 'var(--text-secondary)' }}>
             <Link href="/" className="hover:underline">Home</Link>
             <span>/</span>
             <Link href="/listings" className="hover:underline">Listings</Link>
             <span>/</span>
             <Link href={`/listings?category=${listing.category}`} className="hover:underline">{listing.category}</Link>
             <span>/</span>
-            <span className="truncate max-w-xs" style={{ color: '#163850' }}>{listing.title}</span>
+            <span className="truncate max-w-xs" style={{ color: 'var(--text-primary)' }}>{listing.title}</span>
           </div>
         </div>
 
@@ -142,7 +142,7 @@ export default function ListingDetailPage() {
             {/* Left: Images + Details */}
             <div className="lg:col-span-2 space-y-6">
               {/* Image gallery */}
-              <div className="bg-white rounded-2xl overflow-hidden shadow-sm">
+              <div className="rounded-2xl overflow-hidden shadow-sm">
                 <div className="relative aspect-video bg-gray-100">
                   {listing.images?.length > 0 ? (
                     <img
@@ -181,37 +181,37 @@ export default function ListingDetailPage() {
               </div>
 
               {/* Listing info */}
-              <div className="bg-white rounded-2xl p-6 shadow-sm space-y-4">
+              <div className="rounded-2xl p-6 shadow-sm space-y-4">
                 <div className="flex flex-wrap gap-2 items-center">
                   <span className="badge" style={{ backgroundColor: '#e8f4fd', color: '#045F82' }}>{listing.category}</span>
                   <span className="badge" style={{ backgroundColor: condColor.bg, color: condColor.text }}>{listing.condition}</span>
                   {listing.hostel && <span className="badge" style={{ backgroundColor: '#f1f5f9', color: '#475569' }}>📍 {listing.hostel}</span>}
                   {listing.views !== undefined && (
-                    <span className="text-xs ml-auto" style={{ color: '#9ca3af' }}>{listing.views} views</span>
+                    <span className="text-xs ml-auto" style={{ color: 'var(--text-muted)' }}>{listing.views} views</span>
                   )}
                 </div>
 
-                <h1 className="text-2xl font-bold" style={{ color: '#163850' }}>{listing.title}</h1>
+                <h1 className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>{listing.title}</h1>
 
                 <div className="flex items-baseline gap-3">
                   <span className="text-3xl font-bold" style={{ color: '#079BD8' }}>₹{listing.price.toLocaleString()}</span>
                   {listing.originalPrice && (
                     <>
-                      <span className="text-lg line-through" style={{ color: '#9ca3af' }}>₹{listing.originalPrice.toLocaleString()}</span>
+                      <span className="text-lg line-through" style={{ color: 'var(--text-muted)' }}>₹{listing.originalPrice.toLocaleString()}</span>
                       {discount > 0 && <span className="badge" style={{ backgroundColor: '#dcfce7', color: '#15803d' }}>{discount}% off</span>}
                     </>
                   )}
                 </div>
 
                 <div className="border-t pt-4">
-                  <h3 className="font-semibold mb-2" style={{ color: '#163850' }}>Description</h3>
-                  <p className="text-sm leading-relaxed whitespace-pre-line" style={{ color: '#4b5563' }}>{listing.description}</p>
+                  <h3 className="font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>Description</h3>
+                  <p className="text-sm leading-relaxed whitespace-pre-line" style={{ color: 'var(--text-secondary)' }}>{listing.description}</p>
                 </div>
 
                 {listing.tags?.length > 0 && (
                   <div className="flex flex-wrap gap-2">
                     {listing.tags.map((tag) => (
-                      <span key={tag} className="px-2 py-1 rounded-lg text-xs" style={{ backgroundColor: '#f1f5f9', color: '#6b7280' }}>#{tag}</span>
+                      <span key={tag} className="px-2 py-1 rounded-lg text-xs" style={{ backgroundColor: '#f1f5f9', color: 'var(--text-secondary)' }}>#{tag}</span>
                     ))}
                   </div>
                 )}
@@ -225,14 +225,14 @@ export default function ListingDetailPage() {
                   </div>
                 )}
 
-                <div className="flex items-center gap-2 text-xs" style={{ color: '#9ca3af' }}>
+                <div className="flex items-center gap-2 text-xs" style={{ color: 'var(--text-muted)' }}>
                   <span>Posted {listing.createdAt ? new Date(listing.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : 'recently'}</span>
                 </div>
               </div>
 
               {/* Seller actions (only for own listing) */}
               {isSeller && (
-                <div className="bg-white rounded-2xl p-4 shadow-sm flex flex-wrap gap-3">
+                <div className="rounded-2xl p-4 shadow-sm flex flex-wrap gap-3">
                   <Link href={`/listings/${id}/edit`} className="btn-navy text-sm">
                     ✏️ Edit Listing
                   </Link>
@@ -245,7 +245,7 @@ export default function ListingDetailPage() {
                       setListing((prev) => prev ? { ...prev, status: prev.status === 'Available' ? 'Sold' : 'Available' } : prev);
                     }}
                     className="px-4 py-2 rounded-lg text-sm font-semibold border"
-                    style={{ borderColor: '#e2e8f0', color: '#4b5563' }}
+                    style={{ borderColor: 'var(--border)', color: 'var(--text-secondary)' }}
                   >
                     Mark as {listing.status === 'Available' ? 'Sold' : 'Available'}
                   </button>
@@ -273,12 +273,12 @@ export default function ListingDetailPage() {
 
               {/* Chat section — seller sees all buyer conversations */}
               {isSeller && (
-                <div className="bg-white rounded-2xl p-5 shadow-sm">
-                  <h3 className="font-semibold mb-4" style={{ color: '#163850' }}>
+                <div className="rounded-2xl p-5 shadow-sm">
+                  <h3 className="font-semibold mb-4" style={{ color: 'var(--text-primary)' }}>
                     💬 Buyer Messages ({buyerConversations.length})
                   </h3>
                   {buyerConversations.length === 0 ? (
-                    <p className="text-sm text-center py-4" style={{ color: '#9ca3af' }}>No messages from buyers yet.</p>
+                    <p className="text-sm text-center py-4" style={{ color: 'var(--text-muted)' }}>No messages from buyers yet.</p>
                   ) : (
                     <div className="space-y-2">
                       {buyerConversations.map((conv) => (
@@ -304,12 +304,12 @@ export default function ListingDetailPage() {
                               {(conv.otherParty.name || conv.otherParty.email)?.[0]?.toUpperCase()}
                             </div>
                             <div className="flex-1 min-w-0">
-                              <p className="font-semibold text-sm" style={{ color: '#163850' }}>
+                              <p className="font-semibold text-sm" style={{ color: 'var(--text-primary)' }}>
                                 {conv.otherParty.name || conv.otherParty.email}
                               </p>
-                              <p className="text-xs truncate" style={{ color: '#6b7280' }}>{conv.latestContent}</p>
+                              <p className="text-xs truncate" style={{ color: 'var(--text-secondary)' }}>{conv.latestContent}</p>
                             </div>
-                            <span className="text-xs flex-shrink-0" style={{ color: '#9ca3af' }}>
+                            <span className="text-xs flex-shrink-0" style={{ color: 'var(--text-muted)' }}>
                               {new Date(conv.latestAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}
                             </span>
                           </div>
@@ -329,7 +329,7 @@ export default function ListingDetailPage() {
             {/* Right: Seller info + Actions */}
             <div className="space-y-4">
               {/* Action card */}
-              <div className="bg-white rounded-2xl p-5 shadow-sm space-y-3 sticky top-24">
+              <div className="rounded-2xl p-5 shadow-sm space-y-3 sticky top-24">
                 <div className="text-2xl font-bold" style={{ color: '#079BD8' }}>₹{listing.price.toLocaleString()}</div>
 
                 {!isSeller && listing.status === 'Available' && (
@@ -343,7 +343,7 @@ export default function ListingDetailPage() {
                     <button
                       onClick={() => { if (!session) { signIn(); return; } setShowChat(true); }}
                       className="w-full py-3 rounded-lg font-semibold text-sm border-2 transition-colors"
-                      style={{ borderColor: '#163850', color: '#163850' }}
+                      style={{ borderColor: '#163850', color: 'var(--text-primary)' }}
                     >
                       💬 Message Seller
                     </button>
@@ -362,7 +362,7 @@ export default function ListingDetailPage() {
                 )}
 
                 {listing.status !== 'Available' && (
-                  <div className="py-3 text-center rounded-xl font-semibold text-sm" style={{ backgroundColor: '#f1f5f9', color: '#6b7280' }}>
+                  <div className="py-3 text-center rounded-xl font-semibold text-sm" style={{ backgroundColor: '#f1f5f9', color: 'var(--text-secondary)' }}>
                     This item is {listing.status}
                   </div>
                 )}
@@ -375,8 +375,8 @@ export default function ListingDetailPage() {
                         {listing.seller.name?.[0]?.toUpperCase()}
                       </div>
                       <div>
-                        <div className="font-semibold text-sm" style={{ color: '#163850' }}>{listing.seller.name}</div>
-                        <div className="text-xs" style={{ color: '#9ca3af' }}>{listing.seller.hostel} · IITGN</div>
+                        <div className="font-semibold text-sm" style={{ color: 'var(--text-primary)' }}>{listing.seller.name}</div>
+                        <div className="text-xs" style={{ color: 'var(--text-muted)' }}>{listing.seller.hostel} · IITGN</div>
                       </div>
                     </div>
                   </Link>
@@ -388,13 +388,13 @@ export default function ListingDetailPage() {
                       <span className="text-sm font-semibold" style={{ color: '#045F82' }}>
                         {listing.seller.karmaScore} Karma
                       </span>
-                      <span className="text-xs ml-auto" style={{ color: '#6b7280' }}>Trusted seller</span>
+                      <span className="text-xs ml-auto" style={{ color: 'var(--text-secondary)' }}>Trusted seller</span>
                     </div>
                   )}
 
                   {/* Seller bio */}
                   {sellerProfile?.bio && (
-                    <p className="mt-2 text-xs italic" style={{ color: '#6b7280' }}>"{sellerProfile.bio}"</p>
+                    <p className="mt-2 text-xs italic" style={{ color: 'var(--text-secondary)' }}>"{sellerProfile.bio}"</p>
                   )}
 
                   {/* Contact details */}
@@ -430,9 +430,9 @@ export default function ListingDetailPage() {
               </div>
 
               {/* Safety tips */}
-              <div className="bg-white rounded-2xl p-4 shadow-sm">
-                <h4 className="font-semibold text-sm mb-3" style={{ color: '#163850' }}>Safety Tips</h4>
-                <ul className="space-y-1.5 text-xs" style={{ color: '#6b7280' }}>
+              <div className="rounded-2xl p-4 shadow-sm">
+                <h4 className="font-semibold text-sm mb-3" style={{ color: 'var(--text-primary)' }}>Safety Tips</h4>
+                <ul className="space-y-1.5 text-xs" style={{ color: 'var(--text-secondary)' }}>
                   <li>✅ Meet at a public spot (Mess, Library)</li>
                   <li>✅ Check item condition before paying</li>
                   <li>✅ Use the in-app offer system</li>
@@ -446,7 +446,7 @@ export default function ListingDetailPage() {
           {/* Related listings */}
           {related.length > 0 && (
             <div className="mt-12">
-              <h2 className="text-xl font-bold mb-5" style={{ color: '#163850' }}>More in {listing.category}</h2>
+              <h2 className="text-xl font-bold mb-5" style={{ color: 'var(--text-primary)' }}>More in {listing.category}</h2>
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
                 {related.map((l) => <ListingCard key={l._id} listing={l} />)}
               </div>

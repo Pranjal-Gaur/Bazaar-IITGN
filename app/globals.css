@@ -12,28 +12,129 @@
   --font-sans: 'Open Sans', Helvetica, Arial, sans-serif;
 }
 
+/* ─── Semantic tokens ─── */
 :root {
-  --background: #f8fafc;
-  --foreground: #252525;
+  --bg-page:       #f8fafc;
+  --bg-card:       #ffffff;
+  --bg-card-hover: #f1f5f9;
+  --bg-input:      #ffffff;
+  --bg-subtle:     #e8f4fd;
+  --text-primary:  #163850;
+  --text-secondary:#6b7280;
+  --text-muted:    #9ca3af;
+  --border:        #e2e8f0;
+  --background:    #f8fafc;
+  --foreground:    #252525;
 }
 
-* {
-  box-sizing: border-box;
+/* ─── Dark mode overrides ─── */
+html.dark {
+  --bg-page:       #0f1a22;
+  --bg-card:       #1a2e3d;
+  --bg-card-hover: #1e3448;
+  --bg-input:      #152535;
+  --bg-subtle:     #0e2535;
+  --text-primary:  #e8f4fd;
+  --text-secondary:#94a3b8;
+  --text-muted:    #64748b;
+  --border:        #2d4a5a;
+  --background:    #0f1a22;
+  --foreground:    #e8f4fd;
 }
+
+* { box-sizing: border-box; }
 
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: 'Open Sans', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-/* Scrollbar */
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: #f1f1f1; }
-::-webkit-scrollbar-thumb { background: #163850; border-radius: 3px; }
+/* ─── Page & section backgrounds using variables ─── */
+.page-bg    { background-color: var(--bg-page); }
+.card-bg    { background-color: var(--bg-card); }
+.subtle-bg  { background-color: var(--bg-subtle); }
+.input-bg   { background-color: var(--bg-input); }
+.text-primary-color   { color: var(--text-primary); }
+.text-secondary-color { color: var(--text-secondary); }
+.text-muted-color     { color: var(--text-muted); }
+.border-color         { border-color: var(--border); }
 
-/* Animations */
+/* ─── Tailwind utility overrides in dark mode ─── */
+html.dark .bg-white {
+  background-color: var(--bg-card) !important;
+}
+html.dark .bg-gray-50,
+html.dark .hover\:bg-gray-50:hover {
+  background-color: var(--bg-card-hover) !important;
+}
+html.dark .bg-gray-100 {
+  background-color: #1a3040 !important;
+}
+html.dark .border-gray-100 {
+  border-color: var(--border) !important;
+}
+html.dark .border-gray-50 {
+  border-color: var(--border) !important;
+}
+html.dark .text-gray-400,
+html.dark .text-gray-500 {
+  color: var(--text-muted) !important;
+}
+html.dark .text-gray-600,
+html.dark .text-gray-700,
+html.dark .text-gray-800 {
+  color: var(--text-secondary) !important;
+}
+html.dark .divide-y > * {
+  border-color: var(--border) !important;
+}
+html.dark .shadow-sm {
+  box-shadow: 0 1px 3px rgba(0,0,0,0.4) !important;
+}
+html.dark .shadow-xl {
+  box-shadow: 0 20px 40px rgba(0,0,0,0.5) !important;
+}
+
+/* ─── Dark mode: input/select/textarea fields ─── */
+html.dark input,
+html.dark select,
+html.dark textarea {
+  background-color: var(--bg-input) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border) !important;
+}
+html.dark input::placeholder,
+html.dark textarea::placeholder {
+  color: var(--text-muted) !important;
+}
+
+/* ─── Dark mode: dropdown menus ─── */
+html.dark [style*="background-color: white"],
+html.dark [style*="backgroundColor: white"],
+html.dark [style*="backgroundColor: 'white'"] {
+  background-color: var(--bg-card) !important;
+}
+
+/* ─── Dark mode: page background sections ─── */
+html.dark [style*="#f8fafc"],
+html.dark [style*="f8fafc"] {
+  background-color: var(--bg-page) !important;
+}
+html.dark [style*="#fff8f0"] {
+  background-color: #1a1208 !important;
+}
+
+
+/* ─── Scrollbar ─── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-card); }
+::-webkit-scrollbar-thumb { background: #163850; border-radius: 3px; }
+html.dark ::-webkit-scrollbar-thumb { background: #079BD8; }
+
+/* ─── Animations ─── */
 @keyframes fadeInUp {
   from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
@@ -54,6 +155,9 @@ body {
 .card-hover:hover {
   transform: translateY(-3px);
   box-shadow: 0 10px 30px rgba(22, 56, 80, 0.15);
+}
+html.dark .card-hover:hover {
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
 }
 
 .btn-primary {
